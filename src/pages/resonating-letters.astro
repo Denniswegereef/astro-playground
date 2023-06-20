@@ -3,7 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import {
   POSSIBLE_LOWERCASE_OPTIONS,
   SETTINGS_REGULAR_RIGHT,
-  // SETTINGS_REGULAR_LEFT,
+  SETTINGS_REGULAR_LEFT,
 } from "@/components/resonating-letters";
 ---
 
@@ -42,36 +42,35 @@ import {
       }
     </div>
     <h1 class="heading">Regular left</h1>
-    <!-- <div class="resonating-container">
-      {
-        POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
-          <div class="full-text-container">
-            <span class="character">a</span>
-            <div
-              class="letter-container"
-              data-letter
-              data-text-style="regular-left"
-              data-letter-text={letter}
-            >
-              {SETTINGS_REGULAR_LEFT.slices.map((slice, index) => (
-                <span
-                  data-character
-                  data-percentage={slice.margin}
-                  class="character"
-                  style={{
-                    marginLeft: `${slice.margin}%`,
-                    clipPath: slice.clipPath,
-                  }}
-                >
-                  {letter}
-                </span>
-              ))}
-            </div>
-            <span class="character">b</span>
+    <!-- <!-- <div class="resonating-container"> -->
+    {
+      POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
+        <div class="full-text-container">
+          <span class="character">a</span>
+          <div
+            class="letter-container"
+            data-letter
+            data-text-style="regular-left"
+            data-letter-text={letter}
+          >
+            {SETTINGS_REGULAR_LEFT.slices.map((slice, index) => (
+              <span
+                data-character
+                data-percentage={slice.margin}
+                class="character"
+                style={{
+                  marginLeft: `${slice.margin}%`,
+                  clipPath: slice.clipPath,
+                }}
+              >
+                {letter}
+              </span>
+            ))}
           </div>
-        ))
-      }
-    </div> -->
+          <span class="character">b</span>
+        </div>
+      ))
+    }
   </main>
 </Layout>
 
