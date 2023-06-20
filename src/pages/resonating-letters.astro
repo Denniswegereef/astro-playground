@@ -9,13 +9,19 @@ import {
 
 <Layout title="Resonating letters">
   <main>
+    <button data-download-button class="download-button">Download JSON</button>
     <h1 class="heading">Regular right</h1>
     <div class="resonating-container">
       {
         POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
           <div class="full-text-container">
             <span class="character">a</span>
-            <div class="letter-container" data-letter>
+            <div
+              class="letter-container"
+              data-letter
+              data-text-style="regular-right"
+              data-letter-text={letter}
+            >
               {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
                 <span
                   data-character
@@ -41,7 +47,12 @@ import {
         POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
           <div class="full-text-container">
             <span class="character">a</span>
-            <div class="letter-container" data-letter>
+            <div
+              class="letter-container"
+              data-letter
+              data-text-style="regular-left"
+              data-letter-text={letter}
+            >
               {SETTINGS_REGULAR_LEFT.slices.map((slice, index) => (
                 <span
                   data-character
@@ -65,6 +76,8 @@ import {
 </Layout>
 
 <script>
+  import { downloadJSONFile } from "@/helpers/download-json-file";
+
   const percentageToEm = (
     percentage: number,
     containerWidth: number,
@@ -76,25 +89,60 @@ import {
   };
 
   // Find our component DOM on the page.
-  const letters = [...document.querySelectorAll("[data-letter]")];
+  const letters = [
+    ...document.querySelectorAll("[data-letter]"),
+  ] as HTMLElement[];
 
   const baseFontSize = parseFloat(window.getComputedStyle(letters[0]).fontSize);
 
-  letters.forEach((letter) => {
+  const calculatedSizes = letters.map((letter) => {
+    const textStyle = letter.dataset.textStyle || "";
+
+    const currentLetter = letter.dataset.letterText || "";
+
     const characters = [
       ...letter.querySelectorAll("[data-character]"),
     ] as HTMLElement[];
 
     const containerWidth = letter.getBoundingClientRect().width || 0;
 
-    return characters.forEach((character) => {
+    const calculatedCharacters = characters.map((character) => {
       const percentage = parseFloat(character?.dataset?.percentage || "0");
 
       const emValue = percentageToEm(percentage, containerWidth, baseFontSize);
 
       character.style.marginLeft = `${emValue}em`;
+
+      return emValue;
     });
+
+    return {
+      letter: currentLetter,
+      styles: {
+        margin: calculatedCharacters,
+        clipPath: characters.map((character) => character.style.clipPath),
+      },
+      textStyle,
+    };
   });
+
+  // Group by textStyle
+
+  // const groupedByTextStyle = calculatedSizes.reduce((acc, letter) => {
+  //   (acc[letter.textStyle] = acc[letter.textStyle] || []).push(letter);
+  //   return acc;
+  // }, {} as Record<string, (typeof calculatedSizes)[0][]>);
+
+  const json = {
+    data: calculatedSizes,
+  };
+
+  // Download button
+  const downloadButton = document.querySelector("[data-download-button]");
+
+  downloadButton?.addEventListener("click", () =>
+    downloadJSONFile(json, "resonating-letters.json")
+  );
 </script>
 
 <style lang="scss">
@@ -110,11 +158,17 @@ Uppercase letters
 
 Regular left */
 
+  .download-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+  }
+
   .heading {
     text-align: center;
     margin-top: 20rem;
 
-    &:first-child {
+    &:first-of-type {
       margin-top: 5rem;
     }
   }

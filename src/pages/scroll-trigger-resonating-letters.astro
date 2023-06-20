@@ -1,0 +1,110 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Base three">
+  <div>
+    <main>
+      <div data-element-scrolling-container class="scroll-container">
+        <h1 class="heading">
+          Philh<span
+            data-resonating-letter="a-regular-left"
+            data-resonating-letter
+          >
+            <span>a</span>
+            <span>a</span>
+            <span>a</span>
+          </span>rmonie
+        </h1>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const scrollingContainer = document.querySelector(
+      "[data-element-scrolling-container]"
+    );
+    const letter = document.querySelector("[data-resonating-letter]");
+    const characterFragments = [
+      ...letter.querySelectorAll("span"),
+    ] as HTMLElement[];
+
+    const computedFontSize = parseFloat(
+      window.getComputedStyle(letter).fontSize
+    );
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: scrollingContainer,
+        start: "end end",
+        end: "bottom 20%",
+        scrub: 1,
+        // markers: true,
+      },
+    });
+
+    characterFragments.forEach((element) => {
+      const marginLeftPx = parseFloat(
+        window.getComputedStyle(element).marginLeft
+      );
+      const marginLeftEm = marginLeftPx / computedFontSize;
+
+      tl.from(element, { marginLeft: `0em`, duration: 1 }, "0");
+    });
+
+    // gsap.to(".box", {
+    //   scrollTrigger: ".box", // start the animation when ".box" enters the viewport (once)
+    //   x: 500,
+    // });
+
+    console.log(scrollingContainer);
+  </script>
+
+  <style lang="scss">
+    main {
+      min-height: 400vh;
+    }
+
+    .scroll-container {
+      min-height: 30vh;
+    }
+
+    .heading {
+      font-size: 10rem;
+      text-align: center;
+      padding-top: 40vh;
+    }
+
+    [data-resonating-letter="a-regular-left"] {
+      position: relative;
+      display: inline-grid;
+      grid-template-areas: "char";
+      place-items: flex-start;
+
+      span {
+        grid-area: char;
+        position: relative;
+
+        &:nth-child(1) {
+          margin-left: 0em;
+          clip-path: polygon(0% 0%, 40% 0%, 40% 100%, 0% 100%);
+        }
+
+        &:nth-child(2) {
+          margin-left: 0.05473988266283525em;
+          clip-path: polygon(40% 0%, 75% 0%, 85% 100%, 30% 100%);
+        }
+
+        &:nth-child(3) {
+          margin-left: 0.16421964798850575em;
+          clip-path: polygon(65% 0%, 100% 0%, 100% 100%, 75% 100%);
+        }
+      }
+    }
+  </style>
+</Layout>
