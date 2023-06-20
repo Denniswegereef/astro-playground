@@ -9,20 +9,40 @@ import {
 
 <Layout title="Resonating letters">
   <main>
+    <h1 class="heading">Regular right</h1>
+    <div class="resonating-container">
+      {
+        POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
+          <div class="full-text-container">
+            <span class="character">a</span>
+            <div class="letter-container" data-letter>
+              {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
+                <span
+                  data-character
+                  data-percentage={slice.margin}
+                  class="character"
+                  style={{
+                    marginLeft: `${slice.margin}%`,
+                    clipPath: slice.clipPath,
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </div>
+            <span class="character">b</span>
+          </div>
+        ))
+      }
+    </div>
     <h1 class="heading">Regular left</h1>
     <div class="resonating-container">
       {
         POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
-          <div
-            class="full-text-container"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-            }}
-          >
+          <div class="full-text-container">
             <span class="character">a</span>
             <div class="letter-container" data-letter>
-              {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
+              {SETTINGS_REGULAR_LEFT.slices.map((slice, index) => (
                 <span
                   data-character
                   data-percentage={slice.margin}
@@ -92,6 +112,11 @@ Regular left */
 
   .heading {
     text-align: center;
+    margin-top: 20rem;
+
+    &:first-child {
+      margin-top: 5rem;
+    }
   }
 
   .resonating-container {
@@ -105,6 +130,8 @@ Regular left */
 
   .full-text-container {
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 
     &:hover {
       // color: red;
