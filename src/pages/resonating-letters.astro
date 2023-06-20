@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import {
+  POSSIBLE_LOWERCASE_OPTIONS,
+  SETTINGS_REGULAR_RIGHT,
+} from "@/components/resonating-letters";
+---
+
+<Layout title="Resonating letters">
+  <main>
+    <div class="resonating-container">
+      {
+        POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
+          <div class="letter-container">
+            {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
+              <span
+                class="character"
+                style={{
+                  marginLeft: `${slice.margin}%`,
+                  clipPath: slice.clipPath,
+                }}
+              >
+                {letter}
+              </span>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </main>
+</Layout>
+
+<script></script>
+
+<style>
+  /* Lowercase
+
+Different flavours
+Regular left
+Regular right
+Large left
+Large right
+
+Uppercase letters
+
+Regular left */
+
+  .resonating-container {
+    display: flex;
+    font-size: 10rem;
+    font-weight: bold;
+    flex-wrap: wrap;
+    gap: 4rem;
+    padding: 2rem;
+  }
+
+  .letter-container {
+    display: inline-block;
+    position: relative;
+    display: inline-grid;
+    grid-template-areas: "char";
+    place-items: flex-start;
+  }
+
+  .character {
+    grid-area: char;
+    position: relative;
+    display: inline-block;
+    transition-property: margin, clip-path;
+
+    /* clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); */
+  }
+</style>
