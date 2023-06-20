@@ -1,15 +1,15 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
-// const routes = await Astro.glob("/src/pages/*").then((files) => {
-//   return files.map((file) => file.url).filter((url) => url);
-// });
+const routes = await Astro.glob("/src/pages/*").then((files) => {
+  return files.map((file) => file.url).filter((url) => url);
+});
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
-    <!-- <ul>
+    <ul>
       {
         routes.map((route) => (
           <li>
@@ -17,7 +17,7 @@ import Layout from "../layouts/Layout.astro";
           </li>
         ))
       }
-    </ul> -->
+    </ul>
   </main>
 </Layout>
 
