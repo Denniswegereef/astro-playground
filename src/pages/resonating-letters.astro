@@ -11,18 +11,29 @@ import {
     <div class="resonating-container">
       {
         POSSIBLE_LOWERCASE_OPTIONS.map((letter) => (
-          <div class="letter-container">
-            {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
-              <span
-                class="character"
-                style={{
-                  marginLeft: `${slice.margin}%`,
-                  clipPath: slice.clipPath,
-                }}
-              >
-                {letter}
-              </span>
-            ))}
+          <div
+            class="full-text-container"
+            style={{
+              display: "flex",
+            }}
+          >
+            <span class="character">a</span>
+            <div class="letter-container" data-letter>
+              {SETTINGS_REGULAR_RIGHT.slices.map((slice, index) => (
+                <span
+                  data-character
+                  data-percentage={slice.margin}
+                  class="character"
+                  style={{
+                    marginLeft: `${slice.margin}%`,
+                    clipPath: slice.clipPath,
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+            </div>
+            <span class="character">b</span>
           </div>
         ))
       }
@@ -30,9 +41,40 @@ import {
   </main>
 </Layout>
 
-<script></script>
+<script>
+  const percentageToEm = (
+    percentage: number,
+    containerWidth: number,
+    baseFontSize: number
+  ) => {
+    const containerWidthInEm = containerWidth / baseFontSize;
+    const emValue = (percentage / 100) * containerWidthInEm;
+    return emValue;
+  };
 
-<style>
+  // Find our component DOM on the page.
+  const letters = [...document.querySelectorAll("[data-letter]")];
+
+  const baseFontSize = parseFloat(window.getComputedStyle(letters[0]).fontSize);
+
+  letters.forEach((letter) => {
+    const characters = [
+      ...letter.querySelectorAll("[data-character]"),
+    ] as HTMLElement[];
+
+    const containerWidth = letter.getBoundingClientRect().width || 0;
+
+    return characters.forEach((character) => {
+      const percentage = parseFloat(character?.dataset?.percentage || "0");
+
+      const emValue = percentageToEm(percentage, containerWidth, baseFontSize);
+
+      character.style.marginLeft = `${emValue}em`;
+    });
+  });
+</script>
+
+<style lang="scss">
   /* Lowercase
 
 Different flavours
@@ -46,7 +88,8 @@ Uppercase letters
 Regular left */
 
   .resonating-container {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     font-size: 10rem;
     font-weight: bold;
     flex-wrap: wrap;
@@ -54,8 +97,21 @@ Regular left */
     padding: 2rem;
   }
 
+  .full-text-container {
+    cursor: pointer;
+
+    &:hover {
+      // color: red;
+
+      span {
+        color: #00a0ff;
+        margin-left: 0em !important;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      }
+    }
+  }
+
   .letter-container {
-    display: inline-block;
     position: relative;
     display: inline-grid;
     grid-template-areas: "char";
@@ -66,8 +122,7 @@ Regular left */
     grid-area: char;
     position: relative;
     display: inline-block;
-    transition-property: margin, clip-path;
-
-    /* clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%); */
+    transition: margin-left 0.3s ease-in-out, clip-path 0.3s ease-in-out,
+      color 0.3s ease-in-out;
   }
 </style>
