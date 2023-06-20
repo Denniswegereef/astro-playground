@@ -1,0 +1,54 @@
+---
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout title="Base three">
+  <section>
+    <h1 data-hook-heading>Dennis Dennis Dennis Dennis</h1>
+
+    <svg viewBox="0 0 150 100">
+      <text x="0" y="15">dennis wegereef</text>
+    </svg>
+  </section>
+</Layout>
+
+<script>
+  // import { FitText } from "../components/fit-text";
+  // import { FitTextThree } from "@/components/fit-text";
+
+  // import fitty from "fitty";
+
+  // const heading = document.querySelector("[data-hook-heading]");
+  // if (heading) {
+  //   fitty(heading, {
+  //     observeWindowDelay: 0,
+  //   });
+
+  //   fitty.observeWindowDelay = 0;
+  // }
+
+  // if (heading) {
+  //   console.log("hoi");
+  //   new FitTextThree(heading);
+  // }
+</script>
+
+<style>
+  h1 {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  section {
+    position: relative;
+    min-height: 40vh;
+    width: 80vw;
+    background-color: grey;
+    margin-inline-end: 0 auto;
+    text-align: center;
+  }
+
+  svg {
+    width: 100%;
+  }
+</style>
