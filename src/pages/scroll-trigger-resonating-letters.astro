@@ -6,7 +6,7 @@ import Layout from "@/layouts/Layout.astro";
   <div>
     <main>
       <div data-element-scrolling-container class="scroll-container">
-        <h1 class="heading">
+        <h1 class="heading" data-heading>
           Philh<span
             data-resonating-letter="a-regular-left"
             data-resonating-letter
@@ -30,6 +30,8 @@ import Layout from "@/layouts/Layout.astro";
       "[data-element-scrolling-container]"
     );
     const letter = document.querySelector("[data-resonating-letter]");
+    const heading = document.querySelector("[data-heading]");
+
     const characterFragments = [
       ...letter.querySelectorAll("span"),
     ] as HTMLElement[];
@@ -42,7 +44,6 @@ import Layout from "@/layouts/Layout.astro";
       scrollTrigger: {
         trigger: scrollingContainer,
         start: "end end",
-        // end: "bottom",
         scrub: 1,
       },
     });
@@ -53,6 +54,7 @@ import Layout from "@/layouts/Layout.astro";
       );
       const marginLeftEm = marginLeftPx / computedFontSize;
 
+      tl.to(heading, { scale: 2, duration: 1 }, "0");
       tl.from(element, { marginLeft: `0em`, duration: 1 }, "0");
     });
 
@@ -90,12 +92,12 @@ import Layout from "@/layouts/Layout.astro";
         }
 
         &:nth-child(2) {
-          margin-left: 0.05473988266283525em;
+          margin-left: 0.29473988266283525em;
           clip-path: polygon(40% 0%, 75% 0%, 85% 100%, 30% 100%);
         }
 
         &:nth-child(3) {
-          margin-left: 0.16421964798850575em;
+          margin-left: 0.86421964798850575em;
           clip-path: polygon(65% 0%, 100% 0%, 100% 100%, 75% 100%);
         }
       }
