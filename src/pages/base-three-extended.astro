@@ -8,13 +8,18 @@ import Layout from "../layouts/Layout.astro";
 
 <script>
   import "@/utilities/events";
+  import "@/components/base-three-extended/engine";
+
   import { Experience } from "@/components/base-three-extended/experience";
 
-  const containerElement = document.querySelector<HTMLElement>(
-    "[data-container-element]"
-  );
+  new Experience();
+  // import { Experience } from "@/components/base-three-extended/experience";
 
-  if (containerElement) new Experience({ domElement: containerElement });
+  // const containerElement = document.querySelector<HTMLElement>(
+  //   "[data-container-element]"
+  // );
+
+  // if (containerElement) new Experience({ domElement: containerElement });
 </script>
 
 <style>
