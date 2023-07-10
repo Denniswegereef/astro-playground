@@ -141,6 +141,21 @@ export class Experience {
     };
 
     this.gui = new dat.GUI();
+
+    this.gui
+      .add(
+        {
+          add: () => {
+            this._emitEvent();
+          },
+        },
+        "add"
+      )
+      .name("Trigger event");
     this.gui.add(this.material.uniforms.uProgress, "value", 0, 1, 0.01);
+  }
+
+  _emitEvent() {
+    console.log("emit");
   }
 }
