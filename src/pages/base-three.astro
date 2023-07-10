@@ -3,11 +3,25 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Base three">
-  <canvas></canvas>
+  <div class="container" data-container-element></div>
 </Layout>
 
 <script>
   import { Experience } from "../components/base-three/experience";
 
-  new Experience();
+  const containerElement = document.querySelector<HTMLElement>(
+    "[data-container-element]"
+  );
+
+  if (containerElement) new Experience({ domElement: containerElement });
 </script>
+
+<style>
+  .container {
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    position: fixed;
+    inset: 0;
+  }
+</style>

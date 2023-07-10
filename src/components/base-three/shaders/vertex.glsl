@@ -1,5 +1,5 @@
 varying vec2 vUv;
-uniform float uTime;
+// uniform float uTime;
 
 void main() {
   vUv = uv;
