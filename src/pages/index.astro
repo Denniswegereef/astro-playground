@@ -1,8 +1,16 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
+// const modules = import.meta.glob("/src/pages/*");
+
 const routes = await Astro.glob("/src/pages/*").then((files) => {
-  return files.map((file) => file.url).filter((url) => url);
+  return files
+    .map((file) => {
+      if (!file.url) return;
+
+      return file.url;
+    })
+    .filter((url) => url);
 });
 ---
 
@@ -18,6 +26,6 @@ const routes = await Astro.glob("/src/pages/*").then((files) => {
       }
     </ul>
   </main>
-</Layout>
 
-<style lang="scss"></style>
+  <style lang="scss"></style>
+</Layout>

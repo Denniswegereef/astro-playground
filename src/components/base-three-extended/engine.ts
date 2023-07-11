@@ -26,6 +26,8 @@ export class Engine {
 
     this.tickHandlers = [];
 
+    if (!this.container) return;
+
     this._setSizes();
     this._createTime();
     this._initScene();

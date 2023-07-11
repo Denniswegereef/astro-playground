@@ -7,7 +7,7 @@ import {
 } from "@/components/resonating-letters";
 ---
 
-<Layout title="Resonating letters">
+<Layout title="Resonating letters v1">
   <main>
     <button data-download-button class="download-button">Download JSON</button>
     <h1 class="heading">Regular right</h1>
@@ -17,7 +17,7 @@ import {
           <div class="full-text-container">
             <span class="character">a</span>
             <div
-              class="letter-container"    
+              class="letter-container"
               data-letter
               data-text-style="regular-right"
               data-letter-text={letter}
@@ -50,7 +50,7 @@ import {
             <div
               class="letter-container"
               data-letter
-              data-text-style="regular-left"
+              data-text-style="regular-right"
               data-letter-text={letter}
             >
               {SETTINGS_REGULAR_LEFT.slices.map((slice, index) => (
