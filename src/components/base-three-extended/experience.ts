@@ -1,3 +1,6 @@
+import "@/utilities/events";
+import "@/components/base-three-extended/engine";
+
 import { engine } from "@/components/base-three-extended/engine";
 import { Cube } from "@/components/base-three-extended/world/cube";
 
