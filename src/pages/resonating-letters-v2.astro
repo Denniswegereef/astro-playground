@@ -1,37 +1,39 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
+import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
 ---
 
 <Layout title="Resonating letters v2">
   <main>
     {
-      LETTERS_REGULAR_RIGHT.map((letter) => (
-        <h1>
-          <div>a</div>
-          <span
-            class="span__container"
-            data-letter
-            data-text-style="regular-right"
-            data-letter-text={letter}
-          >
-            {letter.slices.map((slice, index) => (
+      LETTERS_REGULAR_RIGHT_ALL.map((letters) => (
+        <div class="container">
+          {letters.letters.map((letter) => (
+            <h1>
               <span
-                class="span__letter"
-                data-character
-                data-percentage={slice.margin}
-                class="character"
-                style={{
-                  marginLeft: `${slice.margin}%`,
-                  clipPath: slice.clipPath,
-                }}
+                class="span__container"
+                data-letter
+                data-text-style="regular-right"
+                data-letter-text={letter}
               >
-                {letter.letter}
+                {letters.slices.map((slice, index) => (
+                  <span
+                    class="span__letter"
+                    data-character
+                    data-percentage={slice.margin}
+                    class="character"
+                    style={{
+                      marginLeft: `${slice.margin}%`,
+                      clipPath: slice.clipPath,
+                    }}
+                  >
+                    {letter}
+                  </span>
+                ))}
               </span>
-            ))}
-          </span>
-          <div>b</div>
-        </h1>
+            </h1>
+          ))}
+        </div>
       ))
     }
   </main>
@@ -110,6 +112,11 @@ import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
       padding-bottom: 200px;
     }
 
+    .container {
+      display: flex;
+      gap: 4rem;
+    }
+
     .span__container {
       position: relative;
       display: inline-grid;
@@ -121,7 +128,6 @@ import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
       grid-area: char;
       position: relative;
       display: inline-block;
-      color: black;
       // color: red;
 
       transition: margin-left 0.5s cubic-bezier(0.83, 0, 0.17, 1),
@@ -131,9 +137,10 @@ import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
     h1 {
       display: flex;
       margin: 0;
-      font-size: 15rem;
+      font-size: 10rem;
       line-height: 0.9;
       letter-spacing: -0.02em;
+      cursor: pointer;
 
       &:hover {
         // color: red;
@@ -144,54 +151,6 @@ import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
           clip-path: polygon(0% 0%, 100% 0, 100% 130%, 0% 130%);
         }
       }
-    }
-
-    .span__letter-overlay {
-      position: absolute;
-      opacity: 0;
-      transform: translateX(150%);
-    }
-
-    .letter-a {
-      left: 6px;
-      top: 70px;
-      width: 178px;
-    }
-
-    .letter-b {
-      left: 11px;
-      top: 25px;
-      width: 181px;
-    }
-
-    .letter-c {
-      left: 5px;
-      top: 68px;
-      width: 179px;
-    }
-
-    .letter-d {
-      left: 8px;
-      top: 22px;
-      width: 174px;
-    }
-
-    .letter-e {
-      left: 6px;
-      top: 70px;
-      width: 178px;
-    }
-
-    .letter-f {
-      left: 3px;
-      top: 24px;
-      width: 127px;
-    }
-
-    .letter-g {
-      left: -1px;
-      top: 64px;
-      width: 197px;
     }
   </style>
 </Layout>

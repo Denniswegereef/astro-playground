@@ -1,6 +1,6 @@
-export const LETTERS_REGULAR_RIGHT = [
+export const LETTERS_REGULAR_RIGHT_ALL = [
   {
-    letters: ["a"],
+    letters: ["a", "á", "à", "ä", "â"],
     slices: [
       {
         margin: 0,
@@ -68,7 +68,7 @@ export const LETTERS_REGULAR_RIGHT = [
     ],
   },
   {
-    letters: ["e"],
+    letters: ["e", "é", "è", "ë", "ê"],
     slices: [
       {
         margin: 0,
@@ -119,7 +119,7 @@ export const LETTERS_REGULAR_RIGHT = [
     ],
   },
   {
-    letters: ["i"],
+    letters: ["i", "í", "ì", "ï", "î"],
     slices: [
       {
         margin: 0,
@@ -136,7 +136,7 @@ export const LETTERS_REGULAR_RIGHT = [
     ],
   },
   {
-    letters: ["o"],
+    letters: ["o", "ó", "ò", "ö", "ô"],
     slices: [
       {
         margin: 0,
@@ -153,7 +153,7 @@ export const LETTERS_REGULAR_RIGHT = [
     ],
   },
   {
-    letters: ["u"],
+    letters: ["u", "ú", "ù", "ü", "û"],
     slices: [
       {
         margin: 0,
