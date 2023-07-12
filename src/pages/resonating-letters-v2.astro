@@ -49,52 +49,67 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
       return emValue;
     };
 
-    // Find our component DOM on the page.
-    const letters = [
-      ...document.querySelectorAll("[data-letter]"),
-    ] as HTMLElement[];
-
-    const baseFontSize = parseFloat(
-      window.getComputedStyle(letters[0]).fontSize
-    );
-
-    const calculatedSizes = letters.map((letter) => {
-      const textStyle = letter.dataset.textStyle || "";
-
-      const currentLetter = letter.dataset.letterText || "";
-
-      const characters = [
-        ...letter.querySelectorAll("[data-character]"),
+    setTimeout(() => {
+      // Find our component DOM on the page.
+      const letters = [
+        ...document.querySelectorAll("[data-letter]"),
       ] as HTMLElement[];
 
-      const containerWidth = letter.getBoundingClientRect().width || 0;
+      const baseFontSize = parseFloat(
+        window.getComputedStyle(letters[0]).fontSize
+      );
 
-      const calculatedCharacters = characters.map((character) => {
-        const percentage = parseFloat(character?.dataset?.percentage || "0");
+      const calculatedSizes = letters.map((letter) => {
+        const textStyle = letter.dataset.textStyle || "";
 
-        const emValue = percentageToEm(
-          percentage,
-          containerWidth,
-          baseFontSize
-        );
+        const currentLetter = letter.dataset.letterText || "";
 
-        character.style.marginLeft = `${emValue}em`;
+        const characters = [
+          ...letter.querySelectorAll("[data-character]"),
+        ] as HTMLElement[];
 
-        return emValue;
+        const containerWidth = letter.getBoundingClientRect().width || 0;
+
+        const calculatedCharacters = characters.map((character) => {
+          const percentage = parseFloat(character?.dataset?.percentage || "0");
+
+          const emValue = percentageToEm(
+            percentage,
+            containerWidth,
+            baseFontSize
+          );
+
+          character.style.marginLeft = `${emValue}em`;
+
+          return emValue;
+        });
+
+        const marginLeftLastOne = calculatedCharacters[2];
+
+        characters[0].style.marginRight = `${marginLeftLastOne}em`;
+
+        return {
+          letter: currentLetter,
+          styles: {
+            margin: calculatedCharacters,
+            clipPath: characters.map((character) => character.style.clipPath),
+          },
+          textStyle,
+        };
       });
-
-      return {
-        letter: currentLetter,
-        styles: {
-          margin: calculatedCharacters,
-          clipPath: characters.map((character) => character.style.clipPath),
-        },
-        textStyle,
-      };
-    });
+    }, 1000);
   </script>
 
   <style lang="scss">
+    /* apply a natural box layout model to all elements, but allowing components to change */
+    html {
+      box-sizing: border-box;
+    }
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
     /* Register your custom font family and tell the browser where to find it. */
     @font-face {
       font-family: "Basel-Grotesk";
@@ -126,12 +141,18 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
 
     .span__letter {
       grid-area: char;
-      position: relative;
+      // position: absolute;
       display: inline-block;
       // color: red;
 
       transition: margin-left 0.5s cubic-bezier(0.83, 0, 0.17, 1),
+        margin-right 0.5s cubic-bezier(0.83, 0, 0.17, 1),
         clip-path 0.6s cubic-bezier(0.83, 0, 0.17, 1), color 0.3s ease-in-out;
+
+      &:nth-child(2),
+      &:nth-child(3) {
+        position: absolute;
+      }
     }
 
     h1 {
@@ -148,6 +169,7 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
         span {
           color: #00a0ff;
           margin-left: 0em !important;
+          margin-right: 0em !important;
           clip-path: polygon(0% 0%, 100% 0, 100% 130%, 0% 130%);
         }
       }
