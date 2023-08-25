@@ -4,12 +4,12 @@ const prettier = require("prettier");
 
 interface JsonData {
   data: {
-    letter: string,
+    letter: string;
     styles: {
-      margin: number[],
-      clipPath: string[],
-    },
-    textStyle: string,
+      margin: number[];
+      clipPath: string[];
+    };
+    textStyle: string;
   }[];
 }
 
@@ -35,13 +35,19 @@ fs.readFile(
     scssData += `\n`;
 
     jsonData.data.forEach((letter) => {
+      const lastMargin = letter.styles.margin[letter.styles.margin.length - 1];
+
       scssData += `
         [data-resonating-letter="${letter.letter}-${letter.textStyle}"] {
           ${letter.styles.margin
             .map((style, index) => {
               return `
               &:nth-child(${index + 1}) {
-                margin-left: ${style}em;
+                ${
+                  index === 0
+                    ? `margin-right: ${lastMargin}em;`
+                    : `margin-left: ${style}em;`
+                }
                 clip-path: ${letter.styles.clipPath[index]};
               }
             `;

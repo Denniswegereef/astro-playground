@@ -1,0 +1,79 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import "swiper/css";
+---
+
+<Layout title="Base three">
+  <div class="container">
+    <div class="swiper" data-swiper-element>
+      <!-- Additional required wrapper -->
+      <div class="swiper-wrapper">
+        <!-- Slides -->
+        {
+          [...Array(20).keys()].map((slide) => (
+            <div class="swiper-slide" style="width: 200px" data-swiper-slide>Slide {slide}</div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { nextTick } from "process";
+import Swiper from "swiper";
+  const swiperElement = document.querySelector<HTMLElement>("[data-swiper-element]");
+  const swiperSlides = Array.from(document.querySelectorAll<HTMLElement>("[data-swiper-slide]"));
+
+  const clamp = (num: number, min: number, max: number) => Math.min(Math.max(num, min), max);
+
+
+  if (swiperElement) {
+    new Swiper(swiperElement, {
+      direction: 'horizontal',
+      loop: false,
+      slidesPerView: 'auto',
+      on: {
+        sliderMove: (e) => {
+          const progress = clamp(e.progress, 0, 1)
+          const calculatedProgress = progress * (swiperSlides.length - 1)
+          const activeSlide = Math.ceil(progress / (1 / swiperSlides.length))
+
+          const previousSlide = clamp(activeSlide - 1, 0, swiperSlides.length - 1)
+          const nextSlide = clamp(activeSlide - 1, 0, swiperSlides.length - 1)
+
+          const calculatedProgressTwo = activeSlide - calculatedProgress
+    
+          swiperSlides[previousSlide].style.width = `${200 + (200 * calculatedProgressTwo)}px`
+          swiperSlides[nextSlide].style.width = `${200 + (200 * calculatedProgressTwo)}px`
+          swiperSlides[activeSlide].style.width = `${400 + (400 * calculatedProgressTwo)}px`
+
+          e.update()
+        }
+      }
+    });
+  }
+
+</script>
+
+<style scoped>
+  .container {
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    position: fixed;
+    inset: 0;
+  }
+
+  .swiper {
+    width: 90vw;
+    height: 300px;
+  }
+
+  .swiper-slide {
+    height: 300px;
+    background-color: red;
+    transition-property: transform, width !important;;
+  }
+</style>

@@ -29,6 +29,9 @@ dependencies:
   sass:
     specifier: ^1.63.4
     version: 1.63.4
+  swiper:
+    specifier: ^10.2.0
+    version: 10.2.0
   three:
     specifier: ^0.151.3
     version: 0.151.3
@@ -3439,6 +3442,11 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: false
+
+  /swiper@10.2.0:
+    resolution: {integrity: sha512-nktQsOtBInJjr3f5DicxC8eHYGcLXDVIGPSon0QoXRaO6NjKnATCbQ8SZsD3dN1Ph1RH4EhVPwSYCcuDRFWHGQ==}
+    engines: {node: '>= 4.7.0'}
     dev: false
 
   /synckit@0.8.5:

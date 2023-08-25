@@ -5,6 +5,8 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
 
 <Layout title="Resonating letters v2">
   <main>
+    <button data-download-button class="download-button">Download JSON</button>
+
     {
       LETTERS_REGULAR_RIGHT_ALL.map((letters) => (
         <div class="container">
@@ -39,6 +41,10 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
   </main>
 
   <script>
+    import { downloadJSONFile } from "@/helpers/download-json-file";
+
+    let json: any;
+
     const percentageToEm = (
       percentage: number,
       containerWidth: number,
@@ -97,7 +103,18 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
           textStyle,
         };
       });
+
+      json = calculatedSizes;
+
+      console.log({ json });
     }, 1000);
+
+    const downloadButton = document.querySelector("[data-download-button]");
+
+    downloadButton?.addEventListener("click", () => {
+      console.log("cka");
+      downloadJSONFile(json, "resonating-letters.json");
+    });
   </script>
 
   <style lang="scss">
@@ -109,6 +126,12 @@ import { LETTERS_REGULAR_RIGHT_ALL } from "@/components/resonating-letters";
     *:before,
     *:after {
       box-sizing: inherit;
+    }
+
+    .download-button {
+      position: fixed;
+      top: 20px;
+      right: 20px;
     }
     /* Register your custom font family and tell the browser where to find it. */
     @font-face {

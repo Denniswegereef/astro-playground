@@ -19,6 +19,7 @@
     "fitty": "^2.3.7",
     "gsap": "^3.12.1",
     "sass": "^1.63.4",
+    "swiper": "^10.2.0",
     "three": "^0.151.3"
   },
   "devDependencies": {
