@@ -17,6 +17,7 @@ export class Cubes {
   geometry: THREE.BoxGeometry
   shaderMaterial: THREE.ShaderMaterial
   mesh: THREE.Mesh
+  baseCube: THREE.Mesh
   gui: GUI
   uniforms: { [uniform: string]: THREE.IUniform }
   loader: THREE.TextureLoader
@@ -32,7 +33,7 @@ export class Cubes {
     this.geometry = new THREE.BoxGeometry(1, 1, 1)
     this.loader = new THREE.TextureLoader()
     this.material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
+      color: new THREE.Color("#736D79"),
     })
 
     this.uniforms = {
@@ -51,10 +52,16 @@ export class Cubes {
       // matcap: this.loader.load("./textures/test.png"),
     })
 
+    this.baseCube = new THREE.Mesh(
+      new THREE.BoxGeometry(2.1, 2.1, 2.1),
+      this.matcapMaterial
+    )
+
     this.cubeGroup = new THREE.Group()
     this.guiOptions = {
-      expand: 0,
-      baseExpand: 0,
+      expand: 0.08,
+      baseExpand: 0.1,
+      progress: 0,
     }
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
@@ -73,14 +80,20 @@ export class Cubes {
       side.children.forEach((mesh, index) => {
         mesh.position.z =
           this.guiOptions.baseExpand +
-          Math.sin(elapsedTime * mesh.userData.random) * this.guiOptions.expand
+          Math.sin(elapsedTime * mesh.userData.random) *
+            this.guiOptions.expand *
+            this.guiOptions.progress
       })
     })
 
-    this.mesh.rotation.x += Math.sin(elapsedTime) * 0.002
-    this.mesh.rotation.z += Math.sin(elapsedTime) * 0.002
-    this.cubeGroup.rotation.x += Math.sin(elapsedTime) * 0.002
-    this.cubeGroup.rotation.z += Math.sin(elapsedTime) * 0.002
+    const rotation = 0.002
+
+    this.baseCube.rotation.x += Math.sin(elapsedTime) * rotation
+    this.baseCube.rotation.z += Math.sin(elapsedTime) * rotation
+    this.mesh.rotation.x += Math.sin(elapsedTime) * rotation
+    this.mesh.rotation.z += Math.sin(elapsedTime) * rotation
+    this.cubeGroup.rotation.x += Math.sin(elapsedTime) * rotation
+    this.cubeGroup.rotation.z += Math.sin(elapsedTime) * rotation
   }
 
   _createCube() {
@@ -88,8 +101,6 @@ export class Cubes {
       new THREE.BoxGeometry(2, 2, 2),
       this.matcapMaterial
     )
-
-    if (engine.scene) engine.scene.add(this.mesh)
 
     const createSide = (positions: number[], tag: string) => {
       const mesh = new THREE.Mesh(this.geometry, this.matcapMaterial)
@@ -144,6 +155,9 @@ export class Cubes {
         mesh.userData.random = Math.random() + 1
       })
     })
+
+    this.cubeGroup.scale.set(0, 0, 0)
+    this.mesh.scale.set(0, 0, 0)
   }
 
   // Public
@@ -151,11 +165,29 @@ export class Cubes {
     if (!engine.scene) return
 
     engine.scene.add(this.cubeGroup)
-    this.cubeGroup.rotateX(Math.PI * 4)
+    engine.scene.add(this.mesh)
+    engine.scene.add(this.baseCube)
   }
 
   _addGui() {
     const cubeFolder = this.gui.addFolder("Mesh")
+    cubeFolder
+      .add(this.guiOptions, "progress", 0, 1)
+      .step(0.0001)
+      .name("Progress")
+      .onChange((value) => {
+        this.baseCube.scale.set(
+          1 - 0.2 * value,
+          1 - 0.2 * value,
+          1 - 0.2 * value
+        )
+        this.cubeGroup.scale.set(
+          0.8 + 0.2 * value,
+          0.8 + 0.2 * value,
+          0.8 + 0.2 * value
+        )
+      })
+
     cubeFolder
       .add(this.guiOptions, "expand", 0)
       .min(0)
