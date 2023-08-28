@@ -16,9 +16,6 @@ export class Cube {
   }
 
   _tick(elapsedTime: number) {
-    console.log(elapsedTime);
-    // const elapsedTime = engine.clock?.getElapsedTime() || 0;
-
     this.cube.rotation.x += Math.sin(elapsedTime) * 0.01;
     this.cube.rotation.z += Math.sin(elapsedTime) * 0.01;
 
