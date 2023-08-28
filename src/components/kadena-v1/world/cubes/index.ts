@@ -11,16 +11,6 @@ const POSITIONS = [
   [0.5, -0.5, 0],
 ]
 
-interface ColorMap {
-  readonly top: number
-  readonly bottom: number
-  readonly left: number
-  readonly right: number
-  readonly front: number
-  readonly back: number
-  [key: string]: number // Add index signature
-}
-
 const EXPAND_FROM_INSIDE = 0.5
 
 export class Cubes {
@@ -61,11 +51,10 @@ export class Cubes {
       // matcap: this.loader.load("./textures/test.png"),
     })
 
-    console.log(this.matcapMaterial)
-
     this.cubeGroup = new THREE.Group()
     this.guiOptions = {
       expand: 0,
+      baseExpand: 0,
     }
 
     this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
@@ -83,6 +72,7 @@ export class Cubes {
     this.cubeGroup.children.forEach((side) => {
       side.children.forEach((mesh, index) => {
         mesh.position.z =
+          this.guiOptions.baseExpand +
           Math.sin(elapsedTime * mesh.userData.random) * this.guiOptions.expand
       })
     })
@@ -172,6 +162,14 @@ export class Cubes {
       .max(1)
       .step(0.001)
       .name("Expand")
+
+    cubeFolder
+      .add(this.guiOptions, "baseExpand", 0)
+      .min(0)
+      .max(1)
+      .step(0.001)
+      .name("Base expand")
+
     cubeFolder.open()
   }
 }
