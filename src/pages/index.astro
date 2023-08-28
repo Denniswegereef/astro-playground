@@ -1,17 +1,29 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Link from "../components/link/link.astro";
 
-// const modules = import.meta.glob("/src/pages/*");
+import fg from 'fast-glob';
 
-const routes = await Astro.glob("/src/pages/*").then((files) => {
-  return files
-    .map((file) => {
-      if (!file.url) return;
+const collections: string[] = fg.sync("./src/pages/*", { onlyDirectories: false })
 
-      return file.url;
-    })
-    .filter((url) => url);
-});
+const routes = collections.map((collection) => {
+  return collection.replace('./src/pages/', '/').replace('.astro', '')
+})
+
+
+
+
+// const routes = await Astro.glob("/src/pages/*").then((files) => {
+//   return files
+//     .map((file) => {
+//       if (!file.url) return;
+
+//       return file.url;
+//     })
+//     .filter((url) => url);
+// });
+
+
 ---
 
 <Layout title="Welcome to Astro.">
@@ -20,7 +32,7 @@ const routes = await Astro.glob("/src/pages/*").then((files) => {
       {
         routes.map((route) => (
           <li>
-            <a href={route}>{route}</a>
+            <Link href={route} label={route} />
           </li>
         ))
       }
