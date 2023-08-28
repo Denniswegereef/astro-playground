@@ -73,7 +73,7 @@ export class Engine {
       1000
     )
 
-    this.camera.position.z = 3.5
+    this.camera.position.z = 1.5
   }
 
   _createOrbitControls() {

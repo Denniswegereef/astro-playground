@@ -1,53 +1,53 @@
-import fragmentShader from "./shaders/fragment.glsl";
-import vertexShader from "./shaders/vertex.glsl";
-import * as THREE from "three";
-import * as dat from "dat.gui";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import fragmentShader from "./shaders/fragment.glsl"
+import vertexShader from "./shaders/vertex.glsl"
+import * as THREE from "three"
+import * as dat from "dat.gui"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 
 interface ExperienceArguments {
-  domElement: HTMLElement;
+  domElement: HTMLElement
 }
 
 export class Experience {
-  scene: THREE.Scene;
-  container: HTMLElement;
-  width: number;
-  height: number;
-  renderer: THREE.WebGLRenderer;
-  clock: THREE.Clock;
-  camera: THREE.PerspectiveCamera;
-  controls: OrbitControls;
-  isPlaying: boolean;
+  scene: THREE.Scene
+  container: HTMLElement
+  width: number
+  height: number
+  renderer: THREE.WebGLRenderer
+  clock: THREE.Clock
+  camera: THREE.PerspectiveCamera
+  controls: OrbitControls
+  isPlaying: boolean
 
-  delta?: number;
-  material?: THREE.ShaderMaterial;
+  delta?: number
+  material?: THREE.ShaderMaterial
 
   settings?: {
-    progress: number;
-  };
+    progress: number
+  }
 
-  gui?: dat.GUI;
+  gui?: dat.GUI
 
   constructor(options: ExperienceArguments) {
-    this.scene = new THREE.Scene();
+    this.scene = new THREE.Scene()
 
-    this.container = options.domElement;
-    this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
-    this.renderer = new THREE.WebGLRenderer();
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xeeeeee, 1);
-    this.clock = new THREE.Clock();
+    this.container = options.domElement
+    this.width = this.container.offsetWidth
+    this.height = this.container.offsetHeight
+    this.renderer = new THREE.WebGLRenderer()
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    this.renderer.setSize(this.width, this.height)
+    this.renderer.setClearColor(0xeeeeee, 1)
+    this.clock = new THREE.Clock()
 
-    this.container.appendChild(this.renderer.domElement);
+    this.container.appendChild(this.renderer.domElement)
 
     this.camera = new THREE.PerspectiveCamera(
       70,
       window.innerWidth / window.innerHeight,
       0.001,
       1000
-    );
+    )
 
     // const frustumSize = 10;
     // this.aspectRatio = window.innerWidth / window.innerHeight;
@@ -60,28 +60,28 @@ export class Experience {
     //   1000
     // );
 
-    this.camera.position.set(0, 0, 2);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.camera.position.set(0, 0, 2)
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 
-    this.isPlaying = true;
+    this.isPlaying = true
 
-    this.addObjects();
-    this.resize();
-    this.render();
-    this.setupResize();
-    this.createSettings();
+    this.addObjects()
+    this.resize()
+    this.render()
+    this.setupResize()
+    this.createSettings()
   }
 
   setupResize() {
-    window.addEventListener("resize", this.resize.bind(this));
+    window.addEventListener("resize", this.resize.bind(this))
   }
 
   resize() {
-    this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
-    this.renderer.setSize(this.width, this.height);
-    this.camera.aspect = this.width / this.height;
-    this.camera.updateProjectionMatrix();
+    this.width = this.container.offsetWidth
+    this.height = this.container.offsetHeight
+    this.renderer.setSize(this.width, this.height)
+    this.camera.aspect = this.width / this.height
+    this.camera.updateProjectionMatrix()
   }
 
   addObjects() {
@@ -97,7 +97,7 @@ export class Experience {
       // transparent: true,
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-    });
+    })
 
     // this.geometry = new THREE.PlaneGeometry(
     //   this.width / ((2 - this.aspectRatio) * 100),
@@ -106,41 +106,41 @@ export class Experience {
     //   1
     // );
 
-    const geometry = new THREE.PlaneGeometry(1, 1, 20, 20);
-    const plane = new THREE.Mesh(geometry, this.material);
+    const geometry = new THREE.PlaneGeometry(1, 1, 20, 20)
+    const plane = new THREE.Mesh(geometry, this.material)
 
-    this.scene.add(plane);
+    this.scene.add(plane)
   }
 
   stop() {
-    this.isPlaying = false;
+    this.isPlaying = false
   }
 
   play() {
     if (!this.isPlaying) {
-      this.render();
-      this.isPlaying = true;
+      this.render()
+      this.isPlaying = true
     }
   }
 
   render() {
-    if (!this.isPlaying || !this.material) return;
-    this.delta = this.clock.getElapsedTime();
+    if (!this.isPlaying || !this.material) return
+    this.delta = this.clock.getElapsedTime()
 
-    this.material.uniforms.uTime.value = this.delta;
+    this.material.uniforms.uTime.value = this.delta
 
-    requestAnimationFrame(this.render.bind(this));
-    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this.render.bind(this))
+    this.renderer.render(this.scene, this.camera)
   }
 
   createSettings() {
-    if (!this.material) return;
+    if (!this.material) return
 
     this.settings = {
       progress: 0,
-    };
+    }
 
-    this.gui = new dat.GUI();
-    this.gui.add(this.material.uniforms.uProgress, "value", 0, 1, 0.01);
+    this.gui = new dat.GUI()
+    this.gui.add(this.material.uniforms.uProgress, "value", 0, 1, 0.01)
   }
 }
