@@ -11,21 +11,21 @@
     "create-letters": "ts-node ./scripts/create-resonating-letters.ts"
   },
   "dependencies": {
-    "@astrojs/node": "^5.2.0",
-    "@astrojs/vercel": "^3.5.0",
-    "astro": "^2.6.4",
+    "@astrojs/node": "^5.3.6",
+    "@astrojs/vercel": "^3.8.2",
+    "astro": "^2.10.14",
     "autoprefixer": "^10.4.14",
     "dat.gui": "^0.7.9",
     "fast-glob": "^3.3.1",
     "fitty": "^2.3.7",
     "gsap": "^3.12.1",
-    "sass": "^1.63.4",
+    "sass": "^1.66.1",
     "swiper": "^10.2.0",
     "three": "^0.151.3"
   },
   "devDependencies": {
     "@types/dat.gui": "^0.7.10",
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.5.7",
     "@types/three": "^0.153.0",
     "vite-plugin-glsl": "^1.1.2"
   }

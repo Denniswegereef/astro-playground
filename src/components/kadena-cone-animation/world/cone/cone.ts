@@ -4,20 +4,20 @@ import { engine } from "../../engine"
 export class Cone {
   geometry: THREE.BoxGeometry
   material: THREE.MeshBasicMaterial
-  cube: THREE.Mesh
+  mesh: THREE.Mesh
 
   constructor() {
     this.geometry = new THREE.BoxGeometry(1, 1, 1)
     this.material = new THREE.MeshBasicMaterial({ color: "red" })
 
-    this.cube = new THREE.Mesh(this.geometry, this.material)
+    this.mesh = new THREE.Mesh(this.geometry, this.material)
 
     engine.addTickHandler((elapsedTime: number) => this._tick(elapsedTime))
   }
 
   _tick(elapsedTime: number) {
-    this.cube.rotation.x += Math.sin(elapsedTime) * 0.01
-    this.cube.rotation.z += Math.sin(elapsedTime) * 0.01
+    this.mesh.rotation.x += Math.sin(elapsedTime) * 0.01
+    this.mesh.rotation.z += Math.sin(elapsedTime) * 0.01
 
     if (elapsedTime > 5) {
       engine.pause()
@@ -28,6 +28,6 @@ export class Cone {
   setModel() {
     if (!engine.scene) return
 
-    engine.scene.add(this.cube)
+    engine.scene.add(this.mesh)
   }
 }

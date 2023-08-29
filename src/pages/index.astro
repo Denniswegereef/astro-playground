@@ -4,7 +4,7 @@ import Link from "../components/link/link.astro";
 
 import fg from 'fast-glob';
 
-const collections: string[] = fg.globSync("./src/pages/*", { })
+const collections: string[] = fg.sync("./src/pages/*", { onlyDirectories: false })
 
 const routes = collections.map((collection) => {
   return collection.replace('./src/pages/', '/').replace('.astro', '')
@@ -16,7 +16,7 @@ const routes = collections.map((collection) => {
   <main>
     <ul>
       {
-        collections.map((route) => (
+        routes.map((route) => (
           <li>
             <Link href={route} label={route} />
           </li>

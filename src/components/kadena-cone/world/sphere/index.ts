@@ -85,7 +85,7 @@ export class Sphere {
 
       cone.scale.set(0.2, 0.2, 0.2)
 
-      // engine.scene.add(cone)
+      engine.scene.add(cone)
     })
   }
 
