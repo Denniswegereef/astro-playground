@@ -1,7 +1,6 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-
-const ENABLE_ORBIT_CONTROLS = true
+import { ENABLE_ORBIT_CONTROLS } from "./settings"
 
 export class Engine {
   // Public

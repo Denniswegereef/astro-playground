@@ -1,21 +1,23 @@
-import "@/utilities/events";
-import "@/components/base-three-extended/engine";
+import "@/utilities/events"
+import "./engine"
 
-import { engine } from "@/components/base-three-extended/engine";
-import { Cube } from "@/components/base-three-extended/world/cube";
+import { engine } from "./engine"
+import { Cube } from "./world/cube/cube"
 
-export class Experience {
+class Experience {
   constructor() {
     // Create experience
-    this._createWorld();
+    this._createWorld()
 
     // Start rendering
-    engine.render();
+    engine.render()
   }
 
   _createWorld() {
-    const cube = new Cube();
+    const cube = new Cube()
 
-    cube.setModel();
+    cube.setModel()
   }
 }
+
+export default new Experience()

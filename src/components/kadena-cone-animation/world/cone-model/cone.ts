@@ -30,10 +30,6 @@ export class ConeModel {
     this.textureLoader = new THREE.TextureLoader()
     this.matcapMaterial = new THREE.MeshMatcapMaterial()
 
-    // this.scrollContainerElement = document.querySelector<HTMLElement>(
-    //   "[data-scroll-container-element]"
-    // ) as HTMLElement
-
     this._createScrollContainer()
 
     Promise.all([
@@ -113,13 +109,13 @@ export class ConeModel {
         meshObj.rotation.y = THREE.MathUtils.lerp(
           initialRotation.y,
           Math.PI * 2,
-          progress
+          progress * 0.1
         )
 
         meshObj.position.set(
           THREE.MathUtils.lerp(initialPosition.x, index2 * 5, progress),
-          THREE.MathUtils.lerp(initialPosition.y, index2 * 5, progress),
-          THREE.MathUtils.lerp(initialPosition.z, index2 * 5, progress)
+          0,
+          THREE.MathUtils.lerp(initialPosition.z, index2 * 2, progress)
         )
       })
     })
