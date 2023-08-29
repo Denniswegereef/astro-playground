@@ -36,7 +36,7 @@ export class Sphere {
       wireframe: true,
     })
 
-    this.mesh = new THREE.Mesh(this.geometry, this.material)
+    this.mesh = new THREE.Mesh(this.geometry, this.shaderMaterial)
 
     console.log(this.mesh)
 
@@ -45,9 +45,9 @@ export class Sphere {
       this.mesh.geometry.attributes.position.array
     )
 
-    const ConeGeometry = new THREE.ConeGeometry(1, 1, 10)
+    const ConeGeometry = new THREE.ConeGeometry(1, 1, 40)
 
-    const center = new THREE.Vector3(0, 0, 0) // Replace with the actual center coordinates if needed
+    const center = new THREE.Vector3(0, 0, 0)
 
     for (let index = 0; index < positionArray.length; index += 3) {
       const x = positionArray[index]
@@ -79,11 +79,11 @@ export class Sphere {
     if (!engine.scene) return
 
     engine.scene.add(this.mesh)
+
     this.cones.forEach((cone) => {
       if (!engine.scene) return
 
       cone.scale.set(0.2, 0.2, 0.2)
-      // cone.lookAt(0, 0, 0)
 
       engine.scene.add(cone)
     })

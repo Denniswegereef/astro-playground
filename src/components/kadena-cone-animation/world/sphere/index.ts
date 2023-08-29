@@ -38,8 +38,6 @@ export class Sphere {
 
     this.mesh = new THREE.Mesh(this.geometry, this.material)
 
-    console.log(this.mesh)
-
     // Position cones along normals and make them point away from the center
     const positionArray = Array.from(
       this.mesh.geometry.attributes.position.array

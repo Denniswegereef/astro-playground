@@ -10,20 +10,6 @@ const routes = collections.map((collection) => {
   return collection.replace('./src/pages/', '/').replace('.astro', '')
 })
 
-
-
-
-// const routes = await Astro.glob("/src/pages/*").then((files) => {
-//   return files
-//     .map((file) => {
-//       if (!file.url) return;
-
-//       return file.url;
-//     })
-//     .filter((url) => url);
-// });
-
-
 ---
 
 <Layout title="Welcome to Astro.">

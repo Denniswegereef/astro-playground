@@ -1,10 +1,10 @@
 import "@/utilities/events"
 // Start up the engine
-import "@/components/kadena-v1/engine"
+import "@/components/kadena-cube/engine"
 
-import { engine } from "@/components/kadena-v1/engine"
-import { Sphere } from "@/components/kadena-v1/world/sphere/sphere"
-import { Cubes } from "@/components/kadena-v1/world/cubes"
+import { engine } from "@/components/kadena-cube/engine"
+import { Sphere } from "@/components/kadena-cube/world/sphere/sphere"
+import { Cubes } from "@/components/kadena-cube/world/cubes"
 
 export class Experience {
   constructor() {

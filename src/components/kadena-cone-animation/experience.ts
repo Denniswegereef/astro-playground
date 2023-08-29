@@ -4,6 +4,7 @@ import "@/components/kadena-cone-animation/engine"
 
 import { engine } from "@/components/kadena-cone-animation/engine"
 import { Sphere } from "./world/sphere"
+import { Cone } from "./world/cone"
 
 export class Experience {
   constructor() {
@@ -15,9 +16,8 @@ export class Experience {
   }
 
   _createWorld() {
-    // const cube = new Cube();
-    const sphere = new Sphere()
-    // const cubes = new Cubes()
-    sphere.setModel()
+    const cone = new Cone()
+
+    cone.setModel()
   }
 }

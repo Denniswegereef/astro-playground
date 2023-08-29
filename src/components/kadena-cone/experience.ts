@@ -1,8 +1,8 @@
 import "@/utilities/events"
 // Start up the engine
-import "@/components/kadena-v2/engine"
+import "@/components/kadena-cone/engine"
 
-import { engine } from "@/components/kadena-v2/engine"
+import { engine } from "@/components/kadena-cone/engine"
 import { Sphere } from "./world/sphere"
 
 export class Experience {
@@ -15,9 +15,8 @@ export class Experience {
   }
 
   _createWorld() {
-    // const cube = new Cube();
-    const sphere = new Sphere()
-    // const cubes = new Cubes()
-    sphere.setModel()
+    const cone = new Sphere()
+
+    cone.setModel()
   }
 }
