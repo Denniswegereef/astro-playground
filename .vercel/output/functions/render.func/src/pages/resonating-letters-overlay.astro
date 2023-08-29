@@ -1,0 +1,219 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { LETTERS_REGULAR_RIGHT } from "@/components/resonating-letters";
+---
+
+<Layout title="Resonating letters overlay">
+  <main>
+    {
+      LETTERS_REGULAR_RIGHT.map((letters) =>
+        letters.letters.map((letter) => (
+          <h1>
+            <span
+              class="span__container"
+              data-letter
+              data-text-style="regular-right"
+              data-letter-text={letter}
+            >
+              {letters.slices.map((slice, index) => (
+                <span
+                  class="span__letter"
+                  data-character
+                  data-percentage={slice.margin}
+                  class="character"
+                  style={{
+                    marginLeft: `${slice.margin}%`,
+                    clipPath: slice.clipPath,
+                  }}
+                >
+                  {letter}
+                </span>
+              ))}
+
+              <img
+                class={`span__letter-overlay letter-${letter}`}
+                src={`/assets/letter-${letter}.png`}
+              />
+            </span>
+          </h1>
+        ))
+      )
+    }
+  </main>
+
+  <script>
+    // const percentageToEm = (
+    //   percentage: number,
+    //   containerWidth: number,
+    //   baseFontSize: number
+    // ) => {
+    //   const containerWidthInEm = containerWidth / baseFontSize;
+    //   const emValue = (percentage / 100) * containerWidthInEm;
+    //   return emValue;
+    // };
+
+    // // Find our component DOM on the page.
+    // const letters = [
+    //   ...document.querySelectorAll("[data-letter]"),
+    // ] as HTMLElement[];
+
+    // const baseFontSize = parseFloat(
+    //   window.getComputedStyle(letters[0]).fontSize
+    // );
+
+    // const calculatedSizes = letters.map((letter) => {
+    //   const textStyle = letter.dataset.textStyle || "";
+
+    //   const currentLetter = letter.dataset.letterText || "";
+
+    //   const characters = [
+    //     ...letter.querySelectorAll("[data-character]"),
+    //   ] as HTMLElement[];
+
+    //   const containerWidth = letter.getBoundingClientRect().width || 0;
+
+    //   const calculatedCharacters = characters.map((character) => {
+    //     const percentage = parseFloat(character?.dataset?.percentage || "0");
+
+    //     const emValue = percentageToEm(
+    //       percentage,
+    //       containerWidth,
+    //       baseFontSize
+    //     );
+
+    //     character.style.marginLeft = `${emValue}em`;
+
+    //     return emValue;
+    //   });
+
+    //   return {
+    //     letter: currentLetter,
+    //     styles: {
+    //       margin: calculatedCharacters,
+    //       clipPath: characters.map((character) => character.style.clipPath),
+    //     },
+    //     textStyle,
+    //   };
+    // });
+  </script>
+
+  <style lang="scss">
+    /* Register your custom font family and tell the browser where to find it. */
+    @font-face {
+      font-family: "Basel-Grotesk";
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url("/fonts/Basel-Grotesk/Basel-Grotesk-Bold.otf") format("opentype");
+    }
+
+    body {
+      font-feature-settings: "ss02", "tnum" 1, "lnum" 1, "liga" 0, "clig" 0,
+        "calt" 0;
+      font-family: "Basel-Grotesk", sans-serif;
+      font-weight: 600;
+      padding-bottom: 200px;
+    }
+
+    .span__container {
+      position: relative;
+      display: inline-grid;
+      grid-template-areas: "char";
+      place-items: flex-start;
+    }
+
+    .span__letter {
+      grid-area: char;
+      position: relative;
+      display: inline-block;
+      // color: red;
+
+      // transition: margin-left 0.5s cubic-bezier(0.83, 0, 0.17, 1),
+      //   clip-path 0.6s cubic-bezier(0.83, 0, 0.17, 1), color 0.3s ease-in-out;
+    }
+
+    h1 {
+      display: flex;
+      margin: 0;
+      font-size: 15rem;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: red;
+
+      // &:hover {
+      //   // color: red;
+
+      //   span {
+      //     color: #00a0ff;
+      //     margin-left: 0em !important;
+      //     clip-path: polygon(0% 0%, 100% 0, 100% 130%, 0% 130%);
+      //   }
+      // }
+    }
+
+    .span__letter-overlay {
+      position: absolute;
+      opacity: 0.7;
+    }
+
+    .letter-a {
+      left: 6px;
+      top: 70px;
+      width: 178px;
+    }
+
+    .letter-b {
+      left: 11px;
+      top: 25px;
+      width: 181px;
+    }
+
+    .letter-c {
+      left: 5px;
+      top: 68px;
+      width: 179px;
+    }
+
+    .letter-d {
+      left: 8px;
+      top: 22px;
+      width: 174px;
+    }
+
+    .letter-e {
+      left: 6px;
+      top: 70px;
+      width: 178px;
+    }
+
+    .letter-f {
+      left: 3px;
+      top: 24px;
+      width: 127px;
+    }
+
+    .letter-g {
+      left: -1px;
+      top: 64px;
+      width: 197px;
+    }
+
+    .letter-i {
+      left: 0px;
+      top: 16px;
+      width: 116px;
+    }
+
+    .letter-o {
+      left: -15px;
+      top: 49px;
+      width: 222px;
+    }
+
+    .letter-u {
+      left: -3px;
+      top: 53px;
+      width: 195px;
+    }
+  </style>
+</Layout>
