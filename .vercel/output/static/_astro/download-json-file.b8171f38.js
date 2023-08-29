@@ -1,0 +1,1 @@
+const r=(o,n="jsonfile.json")=>{if(!o){console.error("No data");return}typeof o=="object"&&(o=JSON.stringify(o,void 0,4));let t=new Blob([o],{type:"text/json"}),e=document.createElement("a");e.download=n,e.href=window.URL.createObjectURL(t),e.dataset.downloadurl=["text/json",e.download,e.href].join(":");let l=new MouseEvent("click");e.dispatchEvent(l)};export{r as d};
