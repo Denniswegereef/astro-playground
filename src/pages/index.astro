@@ -3,15 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import Link from "../components/link/link.astro";
 
 import fg from 'fast-glob';
-import path from 'path'
 
-export const BLOG_PATH = path.join(process.cwd())
+const getRoutes = async () => {
+  const collections: string[] = await fg('./src/pages/*');
+  return collections.map(collection => collection.replace('./src/pages/', '/').replace('.astro', ''));
+};
 
-const collections: string[] = fg.sync(BLOG_PATH + "/src/pages/*", { onlyDirectories: false })
-
-const routes = collections.map((collection) => {
-  return collection.replace('./src/pages/', '/').replace('.astro', '')
-})
+const routes: string[] = await getRoutes();
 
 ---
 
