@@ -2,33 +2,33 @@
 import Layout from "../layouts/Layout.astro";
 import Link from "../components/link/link.astro";
 
-// const routes = [
-//   "/404.html",
-//   "/base-three-extended",
-//   "/base-three",
-//   "/index",
-//   "/jonsson-slider",
-//   "/kadena-cone-animation",
-//   "/kadena-cone",
-//   "/kadena-cube",
-//   "/resonating-letters-overlay",
-//   "/resonating-letters-v1",
-//   "/resonating-letters-v2",
-//   "/scroll-trigger-resonating-letters"
-// ]
+const routes = [
+  "/404.html",
+  "/base-three-extended",
+  "/base-three",
+  "/index",
+  "/jonsson-slider",
+  "/kadena-cone-animation",
+  "/kadena-cone",
+  "/kadena-cube",
+  "/resonating-letters-overlay",
+  "/resonating-letters-v1",
+  "/resonating-letters-v2",
+  "/scroll-trigger-resonating-letters"
+]
 
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <ul>
-      <!-- {
+      {
         routes.map((route) => (
           <li>
             <Link href={route} label={route} />
           </li>
         ))
-      } -->
+      }
     </ul>
   </main>
 </Layout>
