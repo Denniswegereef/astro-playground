@@ -5,20 +5,14 @@ import Link from "../components/link/link.astro";
 import fg from 'fast-glob';
 import path from 'path';
 
-export let routes: string[] = [];
+let collections: string[] = [];
+const currentWorkingDir = process.cwd();
 
-(async () => {
-  try {
-    const currentWorkingDir = process.cwd();
-    console.log('Current working directory:', currentWorkingDir);
 
-    const collections = await fg(path.resolve(currentWorkingDir, 'src/pages/*'), { onlyDirectories: false });
-    routes = collections.map((collection) => collection.replace('./src/pages/', '/').replace('.astro', ''));
+  collections = fg.sync(path.resolve(currentWorkingDir, 'src/pages/*'), { onlyDirectories: false });
 
-  } catch (error) {
-    console.error('Error while globbing:', error);
-  }
-})();
+
+const routes = collections.map((collection) => collection.replace('./src/pages/', '/').replace('.astro', ''));
 
 ---
 
