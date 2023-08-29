@@ -2,6 +2,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 
 const ENABLE_ORBIT_CONTROLS = true
+const CAMAERA_ZOOM_Z = 3
 
 export class Engine {
   // Public
@@ -73,7 +74,7 @@ export class Engine {
       1000
     )
 
-    this.camera.position.z = 1.5
+    this.camera.position.z = CAMAERA_ZOOM_Z
   }
 
   _createOrbitControls() {
