@@ -45,7 +45,7 @@ export class Sphere {
       this.mesh.geometry.attributes.position.array
     )
 
-    const ConeGeometry = new THREE.ConeGeometry(1, 1, 40)
+    const ConeGeometry = new THREE.ConeGeometry(1, 1, 3)
 
     const center = new THREE.Vector3(0, 0, 0)
 
@@ -85,7 +85,7 @@ export class Sphere {
 
       cone.scale.set(0.2, 0.2, 0.2)
 
-      engine.scene.add(cone)
+      // engine.scene.add(cone)
     })
   }
 

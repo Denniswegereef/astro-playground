@@ -4,12 +4,11 @@ import Link from "../components/link/link.astro";
 
 import fg from 'fast-glob';
 
-const getRoutes = async () => {
-  const collections: string[] = await fg('./src/pages/*');
-  return collections.map(collection => collection.replace('./src/pages/', '/').replace('.astro', ''));
-};
+const collections: string[] = fg.globSync("./src/pages/*", { })
 
-const routes: string[] = await getRoutes();
+const routes = collections.map((collection) => {
+  return collection.replace('./src/pages/', '/').replace('.astro', '')
+})
 
 ---
 
