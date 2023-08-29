@@ -82,6 +82,7 @@ export class Engine {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableDamping = true
+    this.controls.enableZoom = false
   }
 
   _resize() {

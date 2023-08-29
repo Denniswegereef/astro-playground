@@ -2,6 +2,10 @@ import * as THREE from "three"
 import { engine } from "../../engine"
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader"
 import { gsap } from "gsap"
+import VirtualScroll from "virtual-scroll"
+import { clamp } from "three/src/math/MathUtils"
+
+const MATCAP_TEXTURE = "./images/matcap_1.png"
 
 export class ConeModel {
   material: THREE.MeshBasicMaterial
@@ -10,6 +14,9 @@ export class ConeModel {
   scene: THREE.Group | null
   textureLoader: THREE.TextureLoader
   matcapMaterial: THREE.MeshMatcapMaterial
+  scrollProgress: number = 0
+  increasing: boolean = true
+  groups: THREE.Group[] | null = null
 
   constructor() {
     this.loader = new GLTFLoader()
@@ -23,10 +30,16 @@ export class ConeModel {
     this.textureLoader = new THREE.TextureLoader()
     this.matcapMaterial = new THREE.MeshMatcapMaterial()
 
+    // this.scrollContainerElement = document.querySelector<HTMLElement>(
+    //   "[data-scroll-container-element]"
+    // ) as HTMLElement
+
+    this._createScrollContainer()
+
     Promise.all([
       new Promise<THREE.Texture>((resolve, reject) => {
         this.textureLoader.load(
-          "./images/326666_66CBC9_C0B8AE_52B3B4-256px.png",
+          MATCAP_TEXTURE,
           (texture) => resolve(texture),
           undefined,
           (error) => reject(error)
@@ -54,6 +67,15 @@ export class ConeModel {
       })
   }
 
+  _createScrollContainer() {
+    const scroller = new VirtualScroll({})
+    scroller.on((event) => {
+      this.scrollProgress = clamp(event.y * -0.00001, 0, 1)
+
+      console.log(this.scrollProgress)
+    })
+  }
+
   _addModel(gltf: GLTF) {
     if (!engine.scene) return
 
@@ -64,9 +86,15 @@ export class ConeModel {
       obj.material = this.matcapMaterial
     })
 
-    const groups = this.scene.children[0].children
+    this.groups = this.scene.children[0].children as unknown as THREE.Group[]
 
-    groups.forEach((group) => {
+    engine.scene.add(this.scene)
+  }
+
+  _tick(elapsedTime: number) {
+    if (!this.scene || !this.groups) return
+
+    this.groups.forEach((group) => {
       const groupObj = group as THREE.Group
 
       groupObj.children.forEach((mesh, index2) => {
@@ -75,44 +103,26 @@ export class ConeModel {
         const initialPosition = meshObj.position.clone()
         const initialRotation = meshObj.rotation.clone()
 
-        const animationObject = { progress: 0 }
+        const progress = this.scrollProgress
 
-        gsap.to(animationObject, {
-          progress: 1,
-          duration: 3,
-          repeatDelay: 1,
-          delay: 2,
-          repeat: -1,
-          yoyo: true,
-          onUpdate: () => {
-            const { progress } = animationObject
+        meshObj.rotation.x = THREE.MathUtils.lerp(
+          initialRotation.x,
+          Math.PI * 2,
+          progress
+        )
+        meshObj.rotation.y = THREE.MathUtils.lerp(
+          initialRotation.y,
+          Math.PI * 2,
+          progress
+        )
 
-            meshObj.rotation.x = THREE.MathUtils.lerp(
-              initialRotation.x,
-              Math.PI * 2,
-              progress
-            )
-            meshObj.rotation.y = THREE.MathUtils.lerp(
-              initialRotation.y,
-              Math.PI * 2,
-              progress
-            )
-
-            meshObj.position.set(
-              THREE.MathUtils.lerp(initialPosition.x, index2 * 1, progress),
-              THREE.MathUtils.lerp(initialPosition.y, index2 * 1, progress),
-              THREE.MathUtils.lerp(initialPosition.z, index2 * 1, progress)
-            )
-          },
-        })
+        meshObj.position.set(
+          THREE.MathUtils.lerp(initialPosition.x, index2 * 5, progress),
+          THREE.MathUtils.lerp(initialPosition.y, index2 * 5, progress),
+          THREE.MathUtils.lerp(initialPosition.z, index2 * 5, progress)
+        )
       })
     })
-
-    engine.scene.add(this.scene)
-  }
-
-  _tick(elapsedTime: number) {
-    if (!this.scene) return
   }
 
   // Public
