@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { ENABLE_ORBIT_CONTROLS } from "./settings"
+import { ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
+import Stats from "three/examples/jsm/libs/stats.module"
 
 export class Engine {
   // Public
@@ -10,6 +11,7 @@ export class Engine {
   clock?: THREE.Clock
   tickHandlers: Function[]
   controls?: OrbitControls
+  stats: Stats[] = []
 
   //
   container: HTMLElement
@@ -37,6 +39,7 @@ export class Engine {
     this._createRenderer()
     this._createCamera()
     if (ENABLE_ORBIT_CONTROLS) this._createOrbitControls()
+    if (ENABLE_STATS) this._createStats()
     this._resize()
     this._appendToDom()
     this._addEventListeners()
@@ -82,6 +85,21 @@ export class Engine {
     this.controls.enableDamping = true
   }
 
+  _createStats() {
+    this.stats.push(new Stats())
+    // this.stats.push(new Stats())
+    // this.stats.push(new Stats())
+
+    this.stats[0].showPanel(0)
+    // this.stats[1].showPanel(1)
+    // this.stats[2].showPanel(2)
+
+    this.stats.forEach((stat, index) => {
+      this.container.appendChild(stat.dom)
+      stat.dom.style.cssText = `position:absolute;top:0px;left:${85 * index}px;`
+    })
+  }
+
   _resize() {
     if (!this.renderer || !this.camera) return
 
@@ -125,6 +143,7 @@ export class Engine {
     this.tickHandlers.forEach((handler) => handler(elapsedTime))
 
     if (ENABLE_ORBIT_CONTROLS && this.controls) this.controls.update()
+    if (ENABLE_STATS && this.stats) this.stats.forEach((stat) => stat.update())
 
     this.renderer.render(this.scene, this.camera)
   }
