@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Playground - three">
+  <div class="container" data-container-element></div>
+</Layout>
+
+<script>
+  const name  = 'kadena-scroll-animation-player'
+
+  import(`../components/${name}/experience.ts`);
+</script>
+
+<style>
+  .container {
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    position: fixed;
+    inset: 0;
+  }
+</style>

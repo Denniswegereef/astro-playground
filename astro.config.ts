@@ -9,4 +9,5 @@ export default defineConfig({
   },
   output: "hybrid",
   adapter: vercel(),
+  server: { port: 3000, host: true },
 })
