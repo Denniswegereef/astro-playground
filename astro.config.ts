@@ -7,7 +7,7 @@ export default defineConfig({
   vite: {
     plugins: [glsl()],
   },
-  output: "hybrid",
+  output: "server",
   adapter: vercel(),
   server: { port: 3000, host: true },
 })
