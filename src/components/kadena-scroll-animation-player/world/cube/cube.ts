@@ -70,6 +70,6 @@ export class Cube {
   setModel() {
     if (!engine.scene || !this.mesh) return
 
-    engine.scene.add(this.mesh)
+    // engine.scene.add(this.mesh)
   }
 }

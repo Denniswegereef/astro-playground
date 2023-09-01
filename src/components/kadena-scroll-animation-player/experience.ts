@@ -3,6 +3,7 @@ import "./engine"
 
 import { engine } from "./engine"
 import { Cube } from "./world/cube/cube"
+import { ConeModel } from "./world/cone-model"
 
 class Experience {
   constructor() {
@@ -14,9 +15,7 @@ class Experience {
   }
 
   _createWorld() {
-    const cube = new Cube()
-
-    cube.setModel()
+    new ConeModel()
   }
 }
 

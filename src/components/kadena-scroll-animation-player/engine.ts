@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
-import Stats from "three/examples/jsm/libs/stats.module"
+import Stats from "three/examples/jsm/libs/stats.module.js"
 
 export class Engine {
   // Public
@@ -18,6 +18,7 @@ export class Engine {
   width: number
   height: number
   isPlaying: boolean
+  prevTime: number = 0
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -138,9 +139,10 @@ export class Engine {
 
     // Get the elapsed time
     const elapsedTime = this.clock.getElapsedTime()
+    const deltaTime = this.clock.getDelta()
 
     // Pass the elapsed time to each tick handler
-    this.tickHandlers.forEach((handler) => handler(elapsedTime))
+    this.tickHandlers.forEach((handler) => handler({ elapsedTime, deltaTime }))
 
     if (ENABLE_ORBIT_CONTROLS && this.controls) this.controls.update()
     if (ENABLE_STATS && this.stats) this.stats.forEach((stat) => stat.update())
