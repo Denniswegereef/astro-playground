@@ -8,6 +8,8 @@ export default defineConfig({
     plugins: [glsl()],
   },
   output: "server",
-  adapter: vercel(),
+  adapter: vercel({
+    functionPerRoute: false,
+  }),
   server: { port: 3000, host: true },
 })
