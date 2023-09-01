@@ -19,6 +19,8 @@ export class ConeModel {
   mouseMoveProgressY = 0
   directionalLight: THREE.DirectionalLight | null = null
   ambientLight: THREE.AmbientLight | null = null
+  mousedown = false
+  mouseDownTime = 0
 
   constructor() {
     this.loader = new GLTFLoader()
@@ -58,6 +60,16 @@ export class ConeModel {
       this.mouseMoveProgressX = event.clientX / engine.width
       this.mouseMoveProgressY = event.clientY / engine.height
     })
+
+    window.addEventListener("mousedown", () => {
+      console.log("mousedown")
+      this.mousedown = true
+    })
+
+    window.addEventListener("mouseup", () => {
+      console.log("mouseup")
+      this.mousedown = false
+    })
   }
 
   _createLights() {
@@ -75,7 +87,7 @@ export class ConeModel {
     if (!engine.scene) return
 
     const material = new THREE.MeshStandardMaterial({
-      color: "white",
+      color: "#ed098f",
       roughness: 0.5,
     })
 
@@ -105,6 +117,12 @@ export class ConeModel {
 
     const progress = (Math.sin(elapsedTime) + 1) * 0.5
 
+    if (this.mousedown) {
+      this.mouseDownTime = Math.min(this.mouseDownTime + 0.01, 1)
+    } else {
+      this.mouseDownTime = Math.max(0, this.mouseDownTime - 0.01)
+    }
+
     const currentMixertime = this.totalDuration * this.mouseMoveProgressX
     this.directionalLight?.position.set(
       this.mouseMoveProgressX * 10,
@@ -116,7 +134,7 @@ export class ConeModel {
       this.ambientLight.intensity =
         0.5 + this.mouseMoveProgressY * this.mouseMoveProgressX * 3
 
-    this.mixer.setTime(currentMixertime)
+    this.mixer.setTime(currentMixertime * this.mouseDownTime)
     this.mixer.update(deltaTime)
   }
 

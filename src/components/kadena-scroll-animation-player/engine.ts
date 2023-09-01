@@ -1,7 +1,13 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
+import { ENABLE_GUI, ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
 import Stats from "three/examples/jsm/libs/stats.module.js"
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
+import effectRenderPassFragment from "./shaders/effectRenderPassFragment.glsl"
+import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
+import { GUI } from "dat.gui"
 
 export class Engine {
   // Public
@@ -12,13 +18,21 @@ export class Engine {
   tickHandlers: Function[]
   controls?: OrbitControls
   stats: Stats[] = []
+  effectComposer?: EffectComposer
+  customPass: ShaderPass | null = null
 
-  //
   container: HTMLElement
   width: number
   height: number
   isPlaying: boolean
   prevTime: number = 0
+
+  // gui
+  gui: GUI | null = null
+  uniforms: { [uniform: string]: THREE.IUniform }
+  guiOptions: {
+    [key: string]: number
+  }
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -30,6 +44,19 @@ export class Engine {
 
     this.isPlaying = true
 
+    // Start options
+    this.guiOptions = {
+      noiseAmount: 0.15,
+      bloomStrength: 0,
+    }
+
+    this.uniforms = {
+      uNoiseAmount: { value: this.guiOptions.noiseAmount },
+      uTime: { value: 0 },
+      tDiffuse: { value: null },
+      uBloomStrength: { value: this.guiOptions.bloomStrength },
+    }
+
     this.tickHandlers = []
 
     if (!this.container) return
@@ -39,11 +66,13 @@ export class Engine {
     this._initScene()
     this._createRenderer()
     this._createCamera()
+    this._createEffectComposer()
     if (ENABLE_ORBIT_CONTROLS) this._createOrbitControls()
     if (ENABLE_STATS) this._createStats()
     this._resize()
     this._appendToDom()
     this._addEventListeners()
+    if (ENABLE_GUI) this._setControls()
   }
 
   _setSizes() {
@@ -66,6 +95,29 @@ export class Engine {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     this.renderer.setSize(this.width, this.height)
     this.renderer.setClearColor(0x1e1826, 1)
+  }
+
+  _createEffectComposer() {
+    if (!this.renderer || !this.scene || !this.camera) return
+
+    this.effectComposer = new EffectComposer(this.renderer)
+
+    const renderPass = new RenderPass(this.scene, this.camera)
+
+    this.effectComposer.addPass(renderPass)
+
+    console.log(effectRenderPassFragment, effectRenderPassVertex)
+
+    const myEffect = {
+      uniforms: this.uniforms,
+      vertexShader: effectRenderPassVertex,
+      fragmentShader: effectRenderPassFragment,
+    }
+
+    this.customPass = new ShaderPass(myEffect)
+    this.customPass.renderToScreen = true
+
+    this.effectComposer.addPass(this.customPass)
   }
 
   _createCamera() {
@@ -144,10 +196,13 @@ export class Engine {
     // Pass the elapsed time to each tick handler
     this.tickHandlers.forEach((handler) => handler({ elapsedTime, deltaTime }))
 
+    if (this.customPass) this.customPass.uniforms.uTime.value = elapsedTime
+
     if (ENABLE_ORBIT_CONTROLS && this.controls) this.controls.update()
     if (ENABLE_STATS && this.stats) this.stats.forEach((stat) => stat.update())
 
-    this.renderer.render(this.scene, this.camera)
+    // this.renderer.render(this.scene, this.camera)
+    if (this.effectComposer) this.effectComposer.render()
   }
 
   // Interactions
@@ -187,6 +242,34 @@ export class Engine {
     this.renderer.dispose()
 
     // if (this.debug.active) this.debug.ui.destroy();
+  }
+
+  _setControls() {
+    this.gui = new GUI()
+
+    const cubeFolder = this.gui.addFolder("Renderpass")
+
+    cubeFolder
+      .add(this.guiOptions, "noiseAmount", 0, 1)
+      .step(0.0001)
+      .name("Noise amount")
+      .onChange((value) => {
+        if (!this.customPass) return
+
+        this.customPass.uniforms.uNoiseAmount.value = value
+      })
+
+    cubeFolder
+      .add(this.guiOptions, "bloomStrength", 0, 1)
+      .step(0.0001)
+      .name("Bloom strength")
+      .onChange((value) => {
+        if (!this.customPass) return
+
+        this.customPass.uniforms.uBloomStrength.value = value
+      })
+
+    cubeFolder.open()
   }
 }
 
