@@ -78,8 +78,10 @@ export class ConeModel {
     this.directionalLight = new THREE.DirectionalLight(0xffffff)
     this.ambientLight = new THREE.AmbientLight(0x404040)
 
+    this.ambientLight.intensity = 10
+
     this.directionalLight.position.set(3, 3, 0)
-    engine.scene.add(this.directionalLight)
+    // engine.scene.add(this.directionalLight)
     engine.scene.add(this.ambientLight)
   }
 
@@ -87,7 +89,7 @@ export class ConeModel {
     if (!engine.scene) return
 
     const material = new THREE.MeshStandardMaterial({
-      color: "#ed098f",
+      color: "#white",
       roughness: 0.5,
     })
 
@@ -108,6 +110,8 @@ export class ConeModel {
       const obj = o as THREE.Mesh
       obj.material = material
     })
+
+    console.log(this.scene)
 
     engine.scene.add(this.scene)
   }
@@ -130,11 +134,20 @@ export class ConeModel {
       3
     )
 
-    if (this.ambientLight)
-      this.ambientLight.intensity =
-        0.5 + this.mouseMoveProgressY * this.mouseMoveProgressX * 3
+    if (this.scene) {
+      this.scene.rotation.set(
+        0.1 + Math.cos(elapsedTime / 4.5) / 10,
+        Math.sin(elapsedTime / 4) / 4,
+        0.3 - (1 + Math.sin(elapsedTime / 4)) / 8
+      )
+      this.scene.position.y = (1 + Math.sin(elapsedTime / 2)) / 10
+    }
 
-    this.mixer.setTime(currentMixertime * this.mouseDownTime)
+    // if (this.ambientLight)
+    //   this.ambientLight.intensity =
+    //     0.5 + this.mouseMoveProgressY * this.mouseMoveProgressX * 3
+
+    this.mixer.setTime(currentMixertime)
     this.mixer.update(deltaTime)
   }
 

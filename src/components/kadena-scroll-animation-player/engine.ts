@@ -201,7 +201,7 @@ export class Engine {
     if (ENABLE_ORBIT_CONTROLS && this.controls) this.controls.update()
     if (ENABLE_STATS && this.stats) this.stats.forEach((stat) => stat.update())
 
-    // this.renderer.render(this.scene, this.camera)
+    this.renderer.render(this.scene, this.camera)
     if (this.effectComposer) this.effectComposer.render()
   }
 
