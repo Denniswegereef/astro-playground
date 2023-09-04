@@ -78,10 +78,10 @@ export class ConeModel {
     this.directionalLight = new THREE.DirectionalLight(0xffffff)
     this.ambientLight = new THREE.AmbientLight(0x404040)
 
-    this.ambientLight.intensity = 10
+    // this.ambientLight.intensity = 10
 
     this.directionalLight.position.set(3, 3, 0)
-    // engine.scene.add(this.directionalLight)
+    engine.scene.add(this.directionalLight)
     engine.scene.add(this.ambientLight)
   }
 
@@ -143,9 +143,9 @@ export class ConeModel {
       this.scene.position.y = (1 + Math.sin(elapsedTime / 2)) / 10
     }
 
-    // if (this.ambientLight)
-    //   this.ambientLight.intensity =
-    //     0.5 + this.mouseMoveProgressY * this.mouseMoveProgressX * 3
+    if (this.ambientLight)
+      this.ambientLight.intensity =
+        0.5 + this.mouseMoveProgressY * this.mouseMoveProgressX * 3
 
     this.mixer.setTime(currentMixertime)
     this.mixer.update(deltaTime)
