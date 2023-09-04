@@ -9,6 +9,8 @@ import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
 
+const ENABLE_EFFECTS = false
+
 export class Engine {
   // Public
   scene?: THREE.Scene
@@ -66,7 +68,7 @@ export class Engine {
     this._initScene()
     this._createRenderer()
     this._createCamera()
-    this._createEffectComposer()
+    if (ENABLE_EFFECTS) this._createEffectComposer()
     if (ENABLE_ORBIT_CONTROLS) this._createOrbitControls()
     if (ENABLE_STATS) this._createStats()
     this._resize()
@@ -94,7 +96,7 @@ export class Engine {
     })
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     this.renderer.setSize(this.width, this.height)
-    this.renderer.setClearColor(0x1e1826, 1)
+    this.renderer.setClearColor(0x1e9e3f1, 1)
   }
 
   _createEffectComposer() {
@@ -201,8 +203,9 @@ export class Engine {
     if (ENABLE_ORBIT_CONTROLS && this.controls) this.controls.update()
     if (ENABLE_STATS && this.stats) this.stats.forEach((stat) => stat.update())
 
-    this.renderer.render(this.scene, this.camera)
-    if (this.effectComposer) this.effectComposer.render()
+    ENABLE_EFFECTS && this.effectComposer
+      ? this.effectComposer?.render()
+      : this.renderer.render(this.scene, this.camera)
   }
 
   // Interactions
