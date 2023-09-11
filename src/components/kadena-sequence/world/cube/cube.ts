@@ -8,6 +8,8 @@ import { engine } from "../../engine"
 import Events from "@/utilities/events"
 import { calculateScrollProgress } from "../../scroll-container"
 
+import gsap from "gsap"
+
 const MATCAP_TEXTURE_LIGHT = "./assets/matcap_8.png"
 const MATCAP_TEXTURE_BLACK = "./assets/matcap_7.png"
 
@@ -20,6 +22,9 @@ export class CubeModel {
   textureLight: THREE.Texture | null = null
   textureDark: THREE.Texture | null = null
 
+  isIntersecting: boolean = false
+  intersectingAnimation: gsap.core.Tween | null = null
+
   uniforms: Uniforms
 
   constructor() {
@@ -27,7 +32,7 @@ export class CubeModel {
     this.uniforms = {
       uTime: { value: 0 },
       uProgress: { value: 0 },
-      uBaseColor: { value: new THREE.Color(0xffffff) },
+      uBaseColor: { value: new THREE.Color(0x000000) },
       uScrollProgress: { value: calculateScrollProgress() },
     }
 
@@ -128,7 +133,7 @@ export class CubeModel {
   }
 
   _onTickHandler({ elapsedTime, deltaTime }: tickHandler) {
-    if (!this.mesh) return
+    if (!this.mesh || !engine.raycaster || !engine.scene) return
 
     this.uniforms.uTime.value = elapsedTime
 
@@ -140,6 +145,52 @@ export class CubeModel {
     )
 
     this.mesh.position.y = (1 + Math.sin(elapsedTime / 2)) / 10
+
+    // calculate objects intersecting the picking ray
+    const intersects = engine.raycaster.intersectObjects(engine.scene.children)
+
+    const isIntersected =
+      intersects.length > 0 && intersects[0].object === this.mesh
+
+    // Switch to enable and disable interaction and run a gsap clip
+    if (isIntersected && !this.isIntersecting) {
+      this.isIntersecting = true
+
+      this._onIntersectionDetected()
+    } else if (!isIntersected && this.isIntersecting) {
+      this.isIntersecting = false
+
+      this._onIntersectionCleared()
+    }
+  }
+
+  _onIntersectionDetected() {
+    if (!this.mesh) return
+
+    this.intersectingAnimation = gsap.to(this.mesh.scale, {
+      x: 1.2,
+      y: 1.2,
+      z: 1.2,
+      duration: 0.3,
+      onComplete: () => {
+        this.intersectingAnimation = null
+      },
+    })
+  }
+
+  _onIntersectionCleared() {
+    if (!this.mesh) return
+
+    if (this.intersectingAnimation) {
+      this.intersectingAnimation.reverse()
+    } else {
+      gsap.to(this.mesh.scale, {
+        x: 1,
+        y: 1,
+        z: 1,
+        duration: 0.3,
+      })
+    }
   }
 
   _createControls() {

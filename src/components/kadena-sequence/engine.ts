@@ -28,7 +28,8 @@ export class Engine {
   stats: Stats[] = []
   effectComposer?: EffectComposer
   customPass: ShaderPass | null = null
-
+  raycaster: THREE.Raycaster | null = null
+  raycasterPointer: THREE.Vector2 | null = null
   container: HTMLElement
   width: number
   height: number
@@ -64,6 +65,7 @@ export class Engine {
     this._initScene()
     this._createRenderer()
     this._createCamera()
+    this._createRaycaster()
     if (ENABLE_EFFECTS) this._createEffectComposer()
     if (ENABLE_ORBIT_CONTROLS) this._createOrbitControls()
     if (ENABLE_STATS) this._createStats()
@@ -127,6 +129,12 @@ export class Engine {
     this.camera.position.z = 3.5
   }
 
+  _createRaycaster() {
+    this.raycaster = new THREE.Raycaster()
+    // High value because we don't want to intersect right away
+    this.raycasterPointer = new THREE.Vector2(10, 10)
+  }
+
   _createOrbitControls() {
     if (!this.camera || !this.renderer) return
 
@@ -172,6 +180,15 @@ export class Engine {
       this._setSizes()
       this._resize()
     })
+
+    window.addEventListener("pointermove", (event) => {
+      if (!this.raycasterPointer) return
+
+      // calculate pointer position in normalized device coordinates
+      // (-1 to +1) for both components
+      this.raycasterPointer.x = (event.clientX / window.innerWidth) * 2 - 1
+      this.raycasterPointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+    })
   }
 
   // PUBLIC
@@ -188,6 +205,12 @@ export class Engine {
     // Get the elapsed time
     const elapsedTime = this.clock.getElapsedTime()
     const deltaTime = this.clock.getDelta()
+
+    // Raycaster
+    // update the picking ray with the camera and pointer position
+    if (this.raycaster && this.raycasterPointer) {
+      this.raycaster.setFromCamera(this.raycasterPointer, this.camera)
+    }
 
     // Pass the elapsed time to each tick handler
     this.tickHandlers.forEach((handler) => handler({ elapsedTime, deltaTime }))
