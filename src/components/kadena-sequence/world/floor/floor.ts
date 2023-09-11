@@ -13,13 +13,21 @@ export class FloorModel {
     this.uniforms = {
       uTime: { value: 0 },
       uIntroProgress: { value: 0 },
+      uFloorOpacity: { value: 0.025 },
+      uPatternDensity: { value: 5 },
+      uFloorWidth: { value: 50 },
+      uFloorHeight: { value: 10 },
     }
 
     this._createMesh()
+    this._createControls()
   }
 
   _createMesh() {
-    const geometry = new THREE.PlaneGeometry(50, 10)
+    const geometry = new THREE.PlaneGeometry(
+      this.uniforms.uFloorWidth.value,
+      this.uniforms.uFloorHeight.value
+    )
     const material = new THREE.ShaderMaterial({
       fragmentShader,
       vertexShader,
@@ -61,5 +69,34 @@ export class FloorModel {
         },
         0
       )
+  }
+
+  _createControls() {
+    if (!engine.gui) return
+
+    const guiOptions: GuiOptions = {
+      floorOpacity: this.uniforms.uFloorOpacity.value,
+      patternDensity: this.uniforms.uPatternDensity.value,
+    }
+
+    const guiFolder = engine.gui.addFolder("Floor")
+
+    guiFolder
+      .add(guiOptions, "floorOpacity", 0, 0.5)
+      .step(0.0001)
+      .name("Opacity")
+      .onChange((value) => {
+        this.uniforms.uFloorOpacity.value = value
+      })
+
+    guiFolder
+      .add(guiOptions, "patternDensity", 1, 15)
+      .step(1)
+      .name("Pattern density")
+      .onChange((value) => {
+        this.uniforms.uPatternDensity.value = value
+      })
+
+    guiFolder.open()
   }
 }

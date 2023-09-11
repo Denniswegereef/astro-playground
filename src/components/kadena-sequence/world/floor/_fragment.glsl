@@ -2,6 +2,12 @@ varying vec2 vUv;
 uniform float uProgress;
 uniform float uTime;
 uniform float uIntroProgress;
+uniform float uFloorOpacity;
+
+// Floor dimensions
+uniform float uFloorWidth;
+uniform float uFloorHeight;
+uniform float uPatternDensity;
 
 void main()	{
 	vec2 uv = vUv;
@@ -16,8 +22,8 @@ void main()	{
 
 
 	// Create wrapping, this is increased by the width and height of the plane
-	uv.x *= 150.0;     
-	uv.y *= 30.0;      
+	uv.x *= uFloorWidth * uPatternDensity;     
+	uv.y *= uFloorHeight * uPatternDensity;      
 	uv = fract(uv); // Wrap around 1.0
 
 	 // bottom-left
@@ -30,5 +36,5 @@ void main()	{
 	
   vec3 color = vec3(pct);
 
-	gl_FragColor = vec4(color, radialGradient * 0.025 * uIntroProgress);
+	gl_FragColor = vec4(color, radialGradient * uFloorOpacity * uIntroProgress);
 }
