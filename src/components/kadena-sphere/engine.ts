@@ -29,7 +29,10 @@ export class Engine {
   isPlaying: boolean
   prevTime: number = 0
 
+  // gui
+  gui: GUI | null = null
   uniforms: Uniforms
+  guiOptions: GuiOptions
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -41,8 +44,17 @@ export class Engine {
 
     this.isPlaying = true
 
+    // Start options
+    this.guiOptions = {
+      noiseAmount: 0.15,
+      bloomStrength: 0,
+    }
+
     this.uniforms = {
+      uNoiseAmount: { value: this.guiOptions.noiseAmount },
       uTime: { value: 0 },
+      tDiffuse: { value: null },
+      uBloomStrength: { value: this.guiOptions.bloomStrength },
     }
 
     this.tickHandlers = []
@@ -159,6 +171,7 @@ export class Engine {
 
   _addEventListeners() {
     // ALSO TRIGGER RESIZE EVENT HERE
+
     window.addEventListener("resize", () => {
       this._setSizes()
       this._resize()
@@ -228,14 +241,36 @@ export class Engine {
     // Should be orbitControls eventually
     // this.camera.controls.dispose();
     this.renderer.dispose()
+
+    // if (this.debug.active) this.debug.ui.destroy();
   }
 
   _setControls() {
-    const guiOptions: GuiOptions = {
-      value: 0,
-    }
+    this.gui = new GUI()
 
-    const gui = new GUI()
+    const cubeFolder = this.gui.addFolder("Renderpass")
+
+    cubeFolder
+      .add(this.guiOptions, "noiseAmount", 0, 1)
+      .step(0.0001)
+      .name("Noise amount")
+      .onChange((value) => {
+        if (!this.customPass) return
+
+        this.customPass.uniforms.uNoiseAmount.value = value
+      })
+
+    cubeFolder
+      .add(this.guiOptions, "bloomStrength", 0, 1)
+      .step(0.0001)
+      .name("Bloom strength")
+      .onChange((value) => {
+        if (!this.customPass) return
+
+        this.customPass.uniforms.uBloomStrength.value = value
+      })
+
+    cubeFolder.open()
   }
 }
 

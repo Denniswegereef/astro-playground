@@ -2,7 +2,7 @@ import "@/utilities/events"
 import "./engine"
 
 import { engine } from "./engine"
-import { CubeModel } from "./world/cube"
+import { SphereModel } from "./world/sphere"
 
 class Experience {
   constructor() {
@@ -14,9 +14,9 @@ class Experience {
   }
 
   _createWorld() {
-    const cube = new CubeModel()
+    const sphere = new SphereModel()
 
-    cube.setModel()
+    sphere.setModel()
   }
 }
 
