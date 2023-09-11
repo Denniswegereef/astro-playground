@@ -4,4 +4,4 @@ interface tickHandler {
 }
 
 type Uniforms = { [uniform: string]: THREE.IUniform }
-type GuiOptions = { [key: string]: number }
+type GuiOptions = { [key: string]: number | string | boolean | function }

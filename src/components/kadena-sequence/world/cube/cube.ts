@@ -3,9 +3,9 @@ import * as THREE from "three"
 import fragmentShader from "./_fragment.glsl"
 import vertexShader from "./_vertex.glsl"
 
-import { GUI } from "dat.gui"
 import { ENABLE_GUI } from "../../settings"
 import { engine } from "../../engine"
+import Events from "@/utilities/events"
 
 export class CubeModel {
   // Base
@@ -28,6 +28,8 @@ export class CubeModel {
 
   _bindEvents() {
     // Bind events
+
+    Events.$on("engine::background", (_, data) => console.log(data))
   }
 
   _createMesh() {
@@ -54,21 +56,19 @@ export class CubeModel {
   setModel() {
     if (!engine.scene || !this.mesh) return
 
-    console.log("test")
-
     engine.scene.add(this.mesh)
 
     if (ENABLE_GUI) this._createControls()
   }
 
   _createControls() {
+    if (!engine.gui) return
+
     const guiOptions: GuiOptions = {
       progress: 0,
     }
 
-    const gui = new GUI()
-
-    const guiFolder = gui.addFolder("Mesh")
+    const guiFolder = engine.gui.addFolder("Mesh")
 
     guiFolder
       .add(guiOptions, "progress", 0, 1)

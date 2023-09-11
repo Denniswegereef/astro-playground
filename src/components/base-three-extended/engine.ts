@@ -94,8 +94,6 @@ export class Engine {
 
     this.effectComposer.addPass(renderPass)
 
-    console.log(effectRenderPassFragment, effectRenderPassVertex)
-
     const myEffect = {
       uniforms: this.uniforms,
       vertexShader: effectRenderPassVertex,

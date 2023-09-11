@@ -8,6 +8,7 @@ import effectRenderPassFragment from "./shaders/effectRenderPassFragment.glsl"
 import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
+import Events from "@/utilities/events"
 
 const ENABLE_EFFECTS = false
 
@@ -30,6 +31,7 @@ export class Engine {
   prevTime: number = 0
 
   uniforms: Uniforms
+  gui: GUI | null = null
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -48,6 +50,8 @@ export class Engine {
     this.tickHandlers = []
 
     if (!this.container) return
+
+    this.gui = ENABLE_GUI ? new GUI() : null
 
     this._setSizes()
     this._createTime()
@@ -93,8 +97,6 @@ export class Engine {
     const renderPass = new RenderPass(this.scene, this.camera)
 
     this.effectComposer.addPass(renderPass)
-
-    console.log(effectRenderPassFragment, effectRenderPassVertex)
 
     const myEffect = {
       uniforms: this.uniforms,
@@ -231,11 +233,56 @@ export class Engine {
   }
 
   _setControls() {
-    const guiOptions: GuiOptions = {
-      value: 0,
+    if (!this.gui) return
+
+    const guiFolder = this.gui.addFolder("World")
+
+    const settings: GuiOptions = {
+      background: "White",
+      // message: "dat.GUI",
+      // checkbox: true,
+      // colorA: "#FF00B4",
+      // colorB: "#22CBFF",
+      // step5: 10,
+      // range: 50,
+      // speed: 0,
+      // func: () => {
+      //   console.log("lol")
+      // },
+      // justgooddesign: () => {
+      //   console.log("test")
+      // },
+      // field1: "Field 1",
+      // field2: "Field 2",
+      // color0: "#ffae23", // CSS string
+      // color1: [0, 128, 255], // RGB array
+      // color2: [0, 128, 255, 0.3], // RGB with alpha
+      // color3: { h: 350, s: 0.9, v: 0.3 }, // Hue, saturation, value
     }
 
-    const gui = new GUI()
+    guiFolder
+      .add(settings, "background", ["White", "Dark"])
+      .onChange((value) => {
+        if (!this.renderer) return
+
+        const dataObject = {
+          data: {
+            color: value,
+          },
+        }
+
+        if (value === "White") {
+          this.renderer.setClearColor(0x1e9e3f1, 1)
+        }
+
+        if (value === "Dark") {
+          this.renderer.setClearColor(0x1e1726, 1)
+        }
+
+        Events.$trigger("engine::background", dataObject)
+      })
+
+    guiFolder.open()
   }
 }
 
