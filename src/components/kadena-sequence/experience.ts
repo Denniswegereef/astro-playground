@@ -2,7 +2,7 @@ import "@/utilities/events"
 import "./engine"
 
 import { engine } from "./engine"
-import { CubeModel } from "./world/cube"
+import { ConeModel } from "./world/cone"
 import { FloorModel } from "./world/floor"
 import { ScrollContainer } from "./scroll-container"
 
@@ -18,7 +18,7 @@ class Experience {
   _createWorld() {
     new ScrollContainer()
     new FloorModel()
-    new CubeModel()
+    new ConeModel()
   }
 }
 

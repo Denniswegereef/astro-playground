@@ -15,7 +15,7 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
 import Events from "@/utilities/events"
 
-const ENABLE_EFFECTS = false
+const ENABLE_EFFECTS = true
 
 export class Engine {
   // Public
@@ -51,7 +51,9 @@ export class Engine {
     this.isPlaying = true
 
     this.uniforms = {
+      uNoiseAmount: { value: 0.15 },
       uTime: { value: 0 },
+      tDiffuse: { value: null },
     }
 
     this.tickHandlers = []
@@ -95,6 +97,11 @@ export class Engine {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     this.renderer.setSize(this.width, this.height)
     this.renderer.setClearColor(0x1e9e3f1, 1)
+
+    THREE.ColorManagement.enabled = false
+
+    // After instantiating the renderer
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace
   }
 
   _createEffectComposer() {
@@ -270,6 +277,7 @@ export class Engine {
     const settings: GuiOptions = {
       scrollProgress: 0,
       background: "Light",
+      noise: this.uniforms.uNoiseAmount.value,
       // message: "dat.GUI",
       // checkbox: true,
       // colorA: "#FF00B4",
@@ -309,6 +317,15 @@ export class Engine {
             background: value,
           },
         })
+      })
+
+    this.worldGuiFolder
+      .add(settings, "noise", 0, 0.5, 0.0001)
+      .onChange((value) => {
+        this.uniforms.uNoiseAmount.value = value
+        if (this.customPass) {
+          this.customPass.uniforms.uNoiseAmount.value = value
+        }
       })
 
     this.worldGuiFolder.open()
