@@ -9,6 +9,7 @@ import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
 import Events from "@/utilities/events"
+import { EVENT } from "./event-triggers"
 
 const ENABLE_EFFECTS = false
 
@@ -238,7 +239,7 @@ export class Engine {
     const guiFolder = this.gui.addFolder("World")
 
     const settings: GuiOptions = {
-      background: "White",
+      background: "Light",
       // message: "dat.GUI",
       // checkbox: true,
       // colorA: "#FF00B4",
@@ -261,17 +262,17 @@ export class Engine {
     }
 
     guiFolder
-      .add(settings, "background", ["White", "Dark"])
+      .add(settings, "background", ["Light", "Dark"])
       .onChange((value) => {
         if (!this.renderer) return
 
         const dataObject = {
           data: {
-            color: value,
+            background: value,
           },
         }
 
-        if (value === "White") {
+        if (value === "Light") {
           this.renderer.setClearColor(0x1e9e3f1, 1)
         }
 
@@ -279,7 +280,7 @@ export class Engine {
           this.renderer.setClearColor(0x1e1726, 1)
         }
 
-        Events.$trigger("engine::background", dataObject)
+        Events.$trigger(EVENT.ENGINE_BACKGROUND, dataObject)
       })
 
     guiFolder.open()

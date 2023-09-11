@@ -14,9 +14,7 @@ class Experience {
   }
 
   _createWorld() {
-    const cube = new CubeModel()
-
-    cube.setModel()
+    new CubeModel()
   }
 }
 
