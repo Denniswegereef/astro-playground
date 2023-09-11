@@ -1,8 +1,5 @@
 import * as THREE from "three"
 
-// import fragmentShader from "./_fragment.glsl"
-// import vertexShader from "./_vertex.glsl"
-
 import { ENABLE_GUI, EVENT } from "../../settings"
 import { engine } from "../../engine"
 import Events from "@/utilities/events"
@@ -32,7 +29,7 @@ export class CubeModel {
     this.uniforms = {
       uTime: { value: 0 },
       uProgress: { value: 0 },
-      uBaseColor: { value: new THREE.Color(0x000000) },
+      uBaseColor: { value: new THREE.Color(0xffffff) },
       uScrollProgress: { value: calculateScrollProgress() },
     }
 
@@ -124,7 +121,19 @@ export class CubeModel {
 
     this.mesh = new THREE.Mesh(geometry, this.material)
 
-    if (engine.scene) engine.scene.add(this.mesh)
+    if (engine.scene) {
+      engine.scene.add(this.mesh)
+
+      gsap.from(this.mesh.scale, {
+        duration: 1.3,
+        delay: 0.3,
+        ease: "elastic.out(1, 0.9)",
+        x: 0,
+        y: 0,
+        z: 0,
+      })
+    }
+
     if (ENABLE_GUI) this._createControls()
   }
 
