@@ -3,6 +3,7 @@ import "./engine"
 
 import { engine } from "./engine"
 import { CubeModel } from "./world/cube"
+import { ScrollContainer } from "./scroll-container"
 
 class Experience {
   constructor() {
@@ -15,6 +16,7 @@ class Experience {
 
   _createWorld() {
     new CubeModel()
+    new ScrollContainer()
   }
 }
 

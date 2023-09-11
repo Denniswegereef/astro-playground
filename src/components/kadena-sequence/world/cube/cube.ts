@@ -1,12 +1,12 @@
 import * as THREE from "three"
 
-import fragmentShader from "./_fragment.glsl"
-import vertexShader from "./_vertex.glsl"
+// import fragmentShader from "./_fragment.glsl"
+// import vertexShader from "./_vertex.glsl"
 
-import { ENABLE_GUI } from "../../settings"
+import { ENABLE_GUI, EVENT } from "../../settings"
 import { engine } from "../../engine"
 import Events from "@/utilities/events"
-import { EVENT } from "../../event-triggers"
+import { calculateScrollProgress } from "../../scroll-container"
 
 const MATCAP_TEXTURE_LIGHT = "./assets/matcap_8.png"
 const MATCAP_TEXTURE_BLACK = "./assets/matcap_7.png"
@@ -27,6 +27,8 @@ export class CubeModel {
     this.uniforms = {
       uTime: { value: 0 },
       uProgress: { value: 0 },
+      uBaseColor: { value: new THREE.Color(0xffffff) },
+      uScrollProgress: { value: calculateScrollProgress() },
     }
 
     this.textureLoader = new THREE.TextureLoader()
@@ -71,11 +73,17 @@ export class CubeModel {
 
       if (data.background === "Light") {
         this.material.matcap = this.textureLight
+        this.uniforms.uBaseColor.value = new THREE.Color(0xffffff)
       }
 
       if (data.background === "Dark") {
         this.material.matcap = this.textureDark
+        this.uniforms.uBaseColor.value = new THREE.Color(0x000000)
       }
+    })
+
+    Events.$on(EVENT.WORLD_SCROLL, (_, data: { scrollProgress: number }) => {
+      this._onScrollHandler(data.scrollProgress)
     })
   }
 
@@ -85,10 +93,38 @@ export class CubeModel {
       matcap: this.textureLight,
     })
 
+    this.material.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = this.uniforms.uTime
+      shader.uniforms.uScrollProgress = this.uniforms.uScrollProgress
+      shader.uniforms.uBaseColor = this.uniforms.uBaseColor
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        /*glsl*/ `#include <common>`,
+        /*glsl*/ `
+        #include <common>
+        uniform float uTime;
+        uniform float uScrollProgress;
+        uniform vec3 uBaseColor;
+        `
+      )
+
+      shader.fragmentShader = shader.fragmentShader.replace(
+        /*glsl*/ `vec3 outgoingLight = diffuseColor.rgb * matcapColor.rgb;`,
+        /*glsl*/ `
+        vec3 outgoingMatcap = diffuseColor.rgb * matcapColor.rgb;
+        vec3 outgoingLight = mix(uBaseColor, outgoingMatcap, uScrollProgress);
+        `
+      )
+    }
+
     this.mesh = new THREE.Mesh(geometry, this.material)
 
     if (engine.scene) engine.scene.add(this.mesh)
     if (ENABLE_GUI) this._createControls()
+  }
+
+  _onScrollHandler(scrollProgress: number) {
+    this.uniforms.uScrollProgress.value = scrollProgress
   }
 
   _onTickHandler({ elapsedTime, deltaTime }: tickHandler) {

@@ -3,7 +3,9 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Playground - three">
-  <div class="container" data-container-element></div>
+  <div class="sequence__scroll-container">
+    <div class="container" data-container-element></div>
+  </div>
 </Layout>
 
 <script>
@@ -13,6 +15,10 @@ import Layout from "../layouts/Layout.astro";
 </script>
 
 <style>
+  .sequence__scroll-container {
+    width: 100%;
+    height: 400vh;
+  }
   .container {
     width: 100%;
     height: 100vh;

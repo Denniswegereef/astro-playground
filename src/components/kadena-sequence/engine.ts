@@ -1,6 +1,11 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { ENABLE_GUI, ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
+import {
+  ENABLE_GUI,
+  ENABLE_ORBIT_CONTROLS,
+  ENABLE_STATS,
+  EVENT,
+} from "./settings"
 import Stats from "three/examples/jsm/libs/stats.module.js"
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
@@ -9,7 +14,6 @@ import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
 import Events from "@/utilities/events"
-import { EVENT } from "./event-triggers"
 
 const ENABLE_EFFECTS = false
 
@@ -33,6 +37,7 @@ export class Engine {
 
   uniforms: Uniforms
   gui: GUI | null = null
+  worldGuiFolder: GUI | null = null
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -127,6 +132,7 @@ export class Engine {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableDamping = true
+    this.controls.enableZoom = false
   }
 
   _createStats() {
@@ -236,9 +242,10 @@ export class Engine {
   _setControls() {
     if (!this.gui) return
 
-    const guiFolder = this.gui.addFolder("World")
+    this.worldGuiFolder = this.gui.addFolder("World")
 
     const settings: GuiOptions = {
+      scrollProgress: 0,
       background: "Light",
       // message: "dat.GUI",
       // checkbox: true,
@@ -261,16 +268,10 @@ export class Engine {
       // color3: { h: 350, s: 0.9, v: 0.3 }, // Hue, saturation, value
     }
 
-    guiFolder
+    this.worldGuiFolder
       .add(settings, "background", ["Light", "Dark"])
       .onChange((value) => {
         if (!this.renderer) return
-
-        const dataObject = {
-          data: {
-            background: value,
-          },
-        }
 
         if (value === "Light") {
           this.renderer.setClearColor(0x1e9e3f1, 1)
@@ -280,10 +281,14 @@ export class Engine {
           this.renderer.setClearColor(0x1e1726, 1)
         }
 
-        Events.$trigger(EVENT.ENGINE_BACKGROUND, dataObject)
+        Events.$trigger(EVENT.ENGINE_BACKGROUND, {
+          data: {
+            background: value,
+          },
+        })
       })
 
-    guiFolder.open()
+    this.worldGuiFolder.open()
   }
 }
 
