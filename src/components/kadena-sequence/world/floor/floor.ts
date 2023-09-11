@@ -4,6 +4,7 @@ import fragmentShader from "./_fragment.glsl"
 import vertexShader from "./_vertex.glsl"
 
 import gsap from "gsap"
+import { ENABLE_GUI } from "../../settings"
 
 export class FloorModel {
   mesh: THREE.Mesh | null = null
@@ -13,14 +14,14 @@ export class FloorModel {
     this.uniforms = {
       uTime: { value: 0 },
       uIntroProgress: { value: 0 },
-      uFloorOpacity: { value: 0.025 },
+      uFloorOpacity: { value: 0.08 },
       uPatternDensity: { value: 5 },
       uFloorWidth: { value: 50 },
       uFloorHeight: { value: 10 },
     }
 
     this._createMesh()
-    this._createControls()
+    if (ENABLE_GUI) this._createControls()
   }
 
   _createMesh() {
@@ -77,6 +78,7 @@ export class FloorModel {
     const guiOptions: GuiOptions = {
       floorOpacity: this.uniforms.uFloorOpacity.value,
       patternDensity: this.uniforms.uPatternDensity.value,
+      isVisible: true,
     }
 
     const guiFolder = engine.gui.addFolder("Floor")
@@ -95,6 +97,13 @@ export class FloorModel {
       .name("Pattern density")
       .onChange((value) => {
         this.uniforms.uPatternDensity.value = value
+      })
+
+    guiFolder
+      .add(guiOptions, "isVisible")
+      .name("Visible")
+      .onChange((value) => {
+        this.mesh!.visible = value
       })
 
     guiFolder.open()
