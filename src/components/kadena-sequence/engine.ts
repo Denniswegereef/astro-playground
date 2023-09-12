@@ -15,7 +15,7 @@ import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
 import Events from "@/utilities/events"
 
-const ENABLE_EFFECTS = true
+const ENABLE_EFFECTS = false
 
 export class Engine {
   // Public
@@ -319,14 +319,14 @@ export class Engine {
         })
       })
 
-    this.worldGuiFolder
-      .add(settings, "noise", 0, 0.5, 0.0001)
-      .onChange((value) => {
-        this.uniforms.uNoiseAmount.value = value
-        if (this.customPass) {
-          this.customPass.uniforms.uNoiseAmount.value = value
-        }
-      })
+    // this.worldGuiFolder
+    //   .add(settings, "noise", 0, 0.5, 0.0001)
+    //   .onChange((value) => {
+    //     this.uniforms.uNoiseAmount.value = value
+    //     if (this.customPass) {
+    //       this.customPass.uniforms.uNoiseAmount.value = value
+    //     }
+    //   })
 
     this.worldGuiFolder.open()
   }
