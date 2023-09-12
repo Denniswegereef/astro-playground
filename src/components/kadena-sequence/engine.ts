@@ -1,6 +1,11 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
-import { ENABLE_GUI, ENABLE_ORBIT_CONTROLS, ENABLE_STATS } from "./settings"
+import {
+  ENABLE_GUI,
+  ENABLE_ORBIT_CONTROLS,
+  ENABLE_STATS,
+  EVENT,
+} from "./settings"
 import Stats from "three/examples/jsm/libs/stats.module.js"
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js"
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js"
@@ -8,6 +13,7 @@ import effectRenderPassFragment from "./shaders/effectRenderPassFragment.glsl"
 import effectRenderPassVertex from "./shaders/effectRenderPassVertex.glsl"
 import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js"
 import { GUI } from "dat.gui"
+import Events from "@/utilities/events"
 
 const ENABLE_EFFECTS = false
 
@@ -22,7 +28,8 @@ export class Engine {
   stats: Stats[] = []
   effectComposer?: EffectComposer
   customPass: ShaderPass | null = null
-
+  raycaster: THREE.Raycaster | null = null
+  raycasterPointer: THREE.Vector2 | null = null
   container: HTMLElement
   width: number
   height: number
@@ -30,6 +37,8 @@ export class Engine {
   prevTime: number = 0
 
   uniforms: Uniforms
+  gui: GUI | null = null
+  worldGuiFolder: GUI | null = null
 
   constructor() {
     this.container = document.querySelector<HTMLElement>(
@@ -42,18 +51,23 @@ export class Engine {
     this.isPlaying = true
 
     this.uniforms = {
+      uNoiseAmount: { value: 0.15 },
       uTime: { value: 0 },
+      tDiffuse: { value: null },
     }
 
     this.tickHandlers = []
 
     if (!this.container) return
 
+    this.gui = ENABLE_GUI ? new GUI() : null
+
     this._setSizes()
     this._createTime()
     this._initScene()
     this._createRenderer()
     this._createCamera()
+    this._createRaycaster()
     if (ENABLE_EFFECTS) this._createEffectComposer()
     if (ENABLE_ORBIT_CONTROLS) this._createOrbitControls()
     if (ENABLE_STATS) this._createStats()
@@ -83,6 +97,11 @@ export class Engine {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     this.renderer.setSize(this.width, this.height)
     this.renderer.setClearColor(0x1e9e3f1, 1)
+
+    THREE.ColorManagement.enabled = false
+
+    // After instantiating the renderer
+    this.renderer.outputColorSpace = THREE.LinearSRGBColorSpace
   }
 
   _createEffectComposer() {
@@ -93,8 +112,6 @@ export class Engine {
     const renderPass = new RenderPass(this.scene, this.camera)
 
     this.effectComposer.addPass(renderPass)
-
-    console.log(effectRenderPassFragment, effectRenderPassVertex)
 
     const myEffect = {
       uniforms: this.uniforms,
@@ -119,11 +136,18 @@ export class Engine {
     this.camera.position.z = 3.5
   }
 
+  _createRaycaster() {
+    this.raycaster = new THREE.Raycaster()
+    // High value because we don't want to intersect right away
+    this.raycasterPointer = new THREE.Vector2(10, 10)
+  }
+
   _createOrbitControls() {
     if (!this.camera || !this.renderer) return
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.controls.enableDamping = true
+    this.controls.enableZoom = false
   }
 
   _createStats() {
@@ -163,6 +187,15 @@ export class Engine {
       this._setSizes()
       this._resize()
     })
+
+    window.addEventListener("pointermove", (event) => {
+      if (!this.raycasterPointer) return
+
+      // calculate pointer position in normalized device coordinates
+      // (-1 to +1) for both components
+      this.raycasterPointer.x = (event.clientX / window.innerWidth) * 2 - 1
+      this.raycasterPointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+    })
   }
 
   // PUBLIC
@@ -179,6 +212,12 @@ export class Engine {
     // Get the elapsed time
     const elapsedTime = this.clock.getElapsedTime()
     const deltaTime = this.clock.getDelta()
+
+    // Raycaster
+    // update the picking ray with the camera and pointer position
+    if (this.raycaster && this.raycasterPointer) {
+      this.raycaster.setFromCamera(this.raycasterPointer, this.camera)
+    }
 
     // Pass the elapsed time to each tick handler
     this.tickHandlers.forEach((handler) => handler({ elapsedTime, deltaTime }))
@@ -231,11 +270,65 @@ export class Engine {
   }
 
   _setControls() {
-    const guiOptions: GuiOptions = {
-      value: 0,
+    if (!this.gui) return
+
+    this.worldGuiFolder = this.gui.addFolder("World")
+
+    const settings: GuiOptions = {
+      scrollProgress: 0,
+      background: "Light",
+      noise: this.uniforms.uNoiseAmount.value,
+      // message: "dat.GUI",
+      // checkbox: true,
+      // colorA: "#FF00B4",
+      // colorB: "#22CBFF",
+      // step5: 10,
+      // range: 50,
+      // speed: 0,
+      // func: () => {
+      //   console.log("lol")
+      // },
+      // justgooddesign: () => {
+      //   console.log("test")
+      // },
+      // field1: "Field 1",
+      // field2: "Field 2",
+      // color0: "#ffae23", // CSS string
+      // color1: [0, 128, 255], // RGB array
+      // color2: [0, 128, 255, 0.3], // RGB with alpha
+      // color3: { h: 350, s: 0.9, v: 0.3 }, // Hue, saturation, value
     }
 
-    const gui = new GUI()
+    this.worldGuiFolder
+      .add(settings, "background", ["Light", "Dark"])
+      .onChange((value) => {
+        if (!this.renderer) return
+
+        if (value === "Light") {
+          this.renderer.setClearColor(0x1e9e3f1, 1)
+        }
+
+        if (value === "Dark") {
+          this.renderer.setClearColor(0x1e1726, 1)
+        }
+
+        Events.$trigger(EVENT.ENGINE_BACKGROUND, {
+          data: {
+            background: value,
+          },
+        })
+      })
+
+    // this.worldGuiFolder
+    //   .add(settings, "noise", 0, 0.5, 0.0001)
+    //   .onChange((value) => {
+    //     this.uniforms.uNoiseAmount.value = value
+    //     if (this.customPass) {
+    //       this.customPass.uniforms.uNoiseAmount.value = value
+    //     }
+    //   })
+
+    this.worldGuiFolder.open()
   }
 }
 
