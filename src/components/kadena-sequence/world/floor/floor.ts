@@ -14,7 +14,7 @@ export class FloorModel {
     this.uniforms = {
       uTime: { value: 0 },
       uIntroProgress: { value: 0 },
-      uFloorOpacity: { value: 0.08 },
+      uFloorOpacity: { value: 0.0 },
       uPatternDensity: { value: 5 },
       uFloorWidth: { value: 50 },
       uFloorHeight: { value: 10 },

@@ -5,6 +5,9 @@ import { engine } from "../../engine"
 import Events from "@/utilities/events"
 import { calculateScrollProgress } from "../../scroll-container"
 
+import vertexOutlineShader from "./_vertexOutline.glsl"
+import fragemntOutlineShader from "./_fragmentOutline.glsl"
+
 import gsap from "gsap"
 import { GLTFLoader, type GLTF } from "three/addons/loaders/GLTFLoader.js"
 import { clamp } from "three/src/math/MathUtils.js"
@@ -45,7 +48,7 @@ export class ConeModel {
     this.uniforms = {
       uTime: { value: 0 },
       uProgress: { value: 0 },
-      uBaseColor: { value: new THREE.Color(0xffffff) },
+      uBaseColor: { value: new THREE.Color(0x1e9e3f1) },
       uScrollProgress: { value: calculateScrollProgress() },
     }
 
@@ -84,6 +87,7 @@ export class ConeModel {
         this.model = model
 
         this._createMesh()
+        this._createOutlineMesh()
         this._bindEvents()
       })
       .catch((error) => {
@@ -101,7 +105,7 @@ export class ConeModel {
 
       if (data.background === "Light") {
         this.material.matcap = this.textureLight
-        this.uniforms.uBaseColor.value = new THREE.Color(0xffffff)
+        this.uniforms.uBaseColor.value = new THREE.Color(0x1e9e3f1)
       }
 
       if (data.background === "Dark") {
@@ -175,19 +179,52 @@ export class ConeModel {
 
     engine.scene.add(this.mesh)
 
-    gsap.from(this.mesh.scale, {
-      duration: 1.3,
-      delay: 0.3,
-      ease: "elastic.out(1, 0.9)",
-      x: 0,
-      y: 0,
-      z: 0,
-      onComplete: () => {
-        this.isFinishedIntroAnimation = true
-      },
-    })
+    // gsap.from(this.mesh.scale, {
+    //   duration: 1.3,
+    //   delay: 0.3,
+    //   ease: "elastic.out(1, 0.9)",
+    //   x: 0,
+    //   y: 0,
+    //   z: 0,
+    //   onComplete: () => {
+    //     this.isFinishedIntroAnimation = true
+    //   },
+    // })
 
     if (ENABLE_GUI) this._createControls()
+  }
+
+  _createOutlineMesh() {
+    if (!this.mesh || !engine.scene) return
+
+    const outlineMesh = this.mesh?.clone().children[0]
+
+    console.log(outlineMesh)
+
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        uOffset: { value: 0.002 },
+        uColor: { value: new THREE.Color(0x000000) },
+      },
+      vertexShader: vertexOutlineShader,
+      fragmentShader: fragemntOutlineShader,
+      side: THREE.BackSide,
+    })
+
+    outlineMesh.traverse((o) => {
+      const obj = o as THREE.Mesh
+      if (!this.material) return
+      obj.material = material
+    })
+
+    outlineMesh.scale.multiplyScalar(1.05)
+
+    // outlineMesh.scale.set(1.05, 1.05, 1.05)
+
+    // outlineMesh.children[0].material.depthWrite = false
+    // outlineMesh.children[0].quaternion = this.mesh.children[0].quaternion
+
+    engine.scene.add(outlineMesh)
   }
 
   _onScrollHandler(scrollProgress: number) {
@@ -202,13 +239,13 @@ export class ConeModel {
     // Create some floating
 
     // Update mesh.rotation only when not intersecting.
-    this.mesh.rotation.set(
-      0.1 + Math.cos(elapsedTime / 4.5) / 10,
-      Math.sin(elapsedTime / 4) / 4 + elapsedTime * 0.2,
-      0.3 - (1 + Math.sin(elapsedTime / 4)) / 8
-    )
+    // this.mesh.rotation.set(
+    //   0.1 + Math.cos(elapsedTime / 4.5) / 10,
+    //   Math.sin(elapsedTime / 4) / 4 + elapsedTime * 0.2,
+    //   0.3 - (1 + Math.sin(elapsedTime / 4)) / 8
+    // )
 
-    this.mesh.position.y = (1 + Math.sin(elapsedTime / 2)) / 10
+    // this.mesh.position.y = (1 + Math.sin(elapsedTime / 2)) / 10
 
     this.mixer.setTime(this.currentMixertime.value)
     this.mixer.update(deltaTime)
