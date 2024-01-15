@@ -3,6 +3,7 @@ import "./engine"
 
 import { engine } from "./engine"
 import { CubeModel } from "./world/cube"
+import { ScrollGroup } from "./world/scroll-group"
 
 class Experience {
   constructor() {
@@ -14,9 +15,10 @@ class Experience {
   }
 
   _createWorld() {
-    const cube = new CubeModel()
+    // const cube = new CubeModel()
 
-    cube.setModel()
+    // cube.setModel()
+    new ScrollGroup()
   }
 }
 
