@@ -1,0 +1,121 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Playground - three">
+  <div class="container" data-container-element></div>
+
+  <div class="page">
+    <div class="hero">
+      <h1 class="hero__title">Scroll </br> tracking</h1> 
+    </div>
+
+    <div class="spacer" />
+
+    <div class="content" js-hook-data-track>
+      <h2 class="content__title">Big title</h2>
+      <div class="content__element"></div>
+    </div>
+
+    <div class="spacer" />
+
+    <div class="content" js-hook-data-track>
+      <h2 class="content__title">Big title</h2>
+      <div class="content__element"></div>
+    </div>
+
+    <div class="spacer" />
+    
+    <div class="grid" js-hook-data-track>
+      <div class="grid__item"></div>
+      <div class="grid__item"></div>
+      <div class="grid__item"></div>
+    </div>
+
+    <div class="spacer" />
+  </div>
+</Layout>
+
+<script>
+  const name  = 'three-scroll-tracking'
+
+  import(`../components/${name}/experience.ts`);
+</script>
+
+<style>
+  body {
+    margin: 0;
+  }
+
+  .container {
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    width: 100%;
+  }
+
+  .hero__title {
+    text-align: center;
+    font-size: 10vw;
+    line-height: 0.8em;
+    opacity: 0.8;
+    z-index: 2;
+  }
+
+  .spacer {
+    padding-top: 25vh;
+  }
+
+  .content {
+    position: relative;
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .content__title {
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    font-size: 30vw;
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  .content__element {
+    position: absolute;
+    padding-top: 50vw;
+    width: 50vw;
+    background-color: red;
+    top: 20vw;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-gap: 1vw;
+    width: 100%;
+    padding: 5vw;
+  }
+
+  .grid__item {
+    /* padding-top: 50vw; */
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: red;
+  }
+</style>
