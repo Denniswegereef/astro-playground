@@ -7,11 +7,10 @@ let stepX = 50
 let stepY = 50
 let startTime = 0
 
+const distort = { x: 0, y: 0 }
+
 const sketch = (p: p5) => {
   let canvas: p5.Renderer
-
-  let xDistort: dat.GUIController
-  let yDistort: dat.GUIController
 
   p.setup = () => {
     canvas = p.createCanvas(p.windowWidth, p.windowHeight, "p2d")
@@ -24,8 +23,11 @@ const sketch = (p: p5) => {
 
     startTime = p.millis()
 
-    xDistort = gui.add({ x: 0 }, "x", 0, 250)
-    yDistort = gui.add({ y: 0 }, "y", 0, 250)
+    gui.add(distort, "x", 0, 100)
+    gui.add(distort, "y", 0, 100)
+
+    // xDistort = gui.add({ x: 0 }, "x", 0, 250)
+    // yDistort = gui.add({ y: 0 }, "y", 0, 250)
 
     p.noStroke()
   }
@@ -48,17 +50,10 @@ const sketch = (p: p5) => {
     stepX = p.mouseX + 1
     stepY = p.mouseY + 1
 
-    console.log(xDistort.getValue())
-
     for (let gridY = 0; gridY < p.height; gridY += stepY) {
       for (let gridX = 0; gridX < p.width; gridX += stepX) {
         p.fill(gridX, p.height - gridY, 100)
-        p.rect(
-          gridX,
-          gridY,
-          stepX - xDistort.getValue(),
-          stepY - yDistort.getValue()
-        )
+        p.rect(gridX, gridY, stepX - distort.x, stepY - distort.y)
       }
     }
   }

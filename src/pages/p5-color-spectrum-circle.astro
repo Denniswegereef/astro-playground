@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Playground - p5-color-spectrum-circle">
+  <div id="js-container">
+      
+  </div>
+</Layout>
+
+<script>
+  const name  = 'p5-color-spectrum-circle'
+
+  import(`../components/${name}/experience.ts`);
+</script>
+
+<style>
+    body {
+    margin: 0;
+  }
+
+  #defaultCanvas0 {
+    width: 720px;
+    height: 702px;
+  }
+</style>
