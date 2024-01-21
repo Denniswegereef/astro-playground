@@ -6,10 +6,10 @@ const gui = new dat.GUI()
 let startTime = 0
 let guiOptions = {
   noiseLevel: 255,
-  noiseScale: 0.005,
-  threshold: 0.5,
-  color: 0,
-  dotSize: 5,
+  noiseScale: 0.0065,
+  threshold: 0.55,
+  color: 1,
+  dotSize: 10,
   timeMultiplier: 0.2,
 }
 
