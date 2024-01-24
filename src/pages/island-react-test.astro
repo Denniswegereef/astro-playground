@@ -1,0 +1,17 @@
+---
+import Greeting from "@/components/island-react-test/island-react-test";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Island react test">
+  <Greeting client:load messages={["Hej", "Hallo", "Hola", "Habari"]} />
+</Layout>
+
+<style>
+  .container {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    inset: 0;
+  }
+</style>
