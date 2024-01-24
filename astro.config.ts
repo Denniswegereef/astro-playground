@@ -1,7 +1,8 @@
 import { defineConfig } from "astro/config"
 import vercel from "@astrojs/vercel/serverless"
 import glsl from "vite-plugin-glsl"
-import glslify from "vite-plugin-glslify"
+
+import react from "@astrojs/react"
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,5 +13,9 @@ export default defineConfig({
   adapter: vercel({
     functionPerRoute: false,
   }),
-  server: { port: 3000, host: true },
+  server: {
+    port: 3000,
+    host: true,
+  },
+  integrations: [react()],
 })
