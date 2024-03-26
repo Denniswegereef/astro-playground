@@ -1,5 +1,8 @@
 import * as d3 from "d3"
 import gsap from "gsap"
+import { parsePath, roundCommands, roundCorners } from "svg-round-corners"
+
+import { smoothPath } from "svg-smoother"
 
 class Experience {
   container: HTMLElement | null
@@ -35,11 +38,23 @@ class Experience {
         this.updateMousePoint(x, y)
       })
 
+    this.svg = d3
+      .create("svg")
+      .attr("width", 0) // Hide the SVG by setting width and height to 0
+      .attr("height", 0)
+
+    // Initialize clipPath within defs
+    const defs = this.svg.append("defs")
+
+    const clipPath = defs.append("clipPath").attr("id", "myClip")
+
+    if (this.container) this.container.appendChild(this.svg.node())
+
     this.updateVoronoi()
 
     if (this.container) this.container.appendChild(this.svg.node()!)
 
-    this.#startAnimation()
+    // this.#startAnimation()
   }
 
   updateMousePoint(x: number, y: number) {
@@ -80,7 +95,7 @@ class Experience {
       .join("path")
       // .attr("d", arc.cornerRadius(10))
       .attr("class", "voronoi-cell")
-      .attr("stroke", "white")
+      .attr("stroke", "blue")
       .attr("stroke-width", 10)
       // .attr("stroke-width", "1.5px")
       .attr("stroke-linejoin", "round")
@@ -135,3 +150,31 @@ class Experience {
 }
 
 export default new Experience()
+
+// const paths = [
+//   // "M406.187 737.596L382.871 450.2L215.673 280.835L-4.95272e-05 737.596L406.187 737.596Z",
+//   "M955.294 512.197L543.092 316.22L387.521 450.16L410.84 737.596L955.294 737.596L955.294 512.197Z",
+//   // "M575.66 0.00063267L545.19 312.081L955.294 507.06L955.294 0.000665859L575.66 0.00063267Z",
+//   // "M61.7999 -4.2474e-05L216.858 275.435L385.239 446L540.502 312.325L570.997 2.04139e-06L61.7999 -4.2474e-05Z",
+// ]
+
+// const [path1, path2, path3, path4, path5] = paths.map((path) =>
+//   smoothPath(path, {
+//     radius: 20,
+//     numberAccuracy: 30,
+//     // allowEllipse: false,
+//     // preventOverflow: true,
+//     // reduceCommands: true,
+//   })
+// )
+
+// console.log(`
+// <svg width="912" height="472" viewBox="0 0 912 472" fill="none" xmlns="http://www.w3.org/2000/svg">
+//   <path d="${path1}" fill="#221155" fill-opacity="0.2"/>
+//   <path d="${path2}" fill="#221155" fill-opacity="0.2"/>
+//   <path d="${path3}" fill="#221155" fill-opacity="0.2"/>
+//   <path d="${path4}" fill="#221155" fill-opacity="0.2"/>
+// </svg>
+// `)
+
+// console.log({ path1, path2, path3, path4, path5 })

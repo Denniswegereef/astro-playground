@@ -1,0 +1,70 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Playground - three">
+  <svg width="0" height="0" viewBox="0 0 1198 638" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="clipShape">
+        <!-- Your paths here -->
+  <path id="dynamicPath" d="M465.058 0C435.216 0 415.882 31.4981 429.392 58.1077L446.235 91.2838C449.008 96.747 453 101.5 457.902 105.176L580.157 196.868C592.353 206.014 608.687 207.434 622.277 200.528L868.017 75.6603C905.522 56.6032 891.965 0 849.897 0H465.058Z" fill="#4000FF" fill-opacity="0.2"/>
+  <path d="M35.866 638C46.559 638 56.6944 633.229 63.508 624.988L364.245 261.238C366.061 259.042 367.637 256.659 368.946 254.128L439.124 118.451C445.036 107.02 445.088 93.4421 439.262 81.9665L408.762 21.8923C401.944 8.46157 388.158 0 373.096 0H40C17.9086 0 0 17.9086 0 40V602.134C0 621.942 16.0577 638 35.866 638V638Z" fill="#4000FF" fill-opacity="0.2"/>
+  <path d="M386.388 224.759C376.689 243.512 383.233 266.574 401.337 277.436L536.203 358.356C562.563 374.172 596.17 355.578 596.775 324.843L598.563 233.965C598.816 221.1 592.865 208.898 582.571 201.178L487.823 130.117C468.036 115.277 439.658 121.771 428.295 143.741L386.388 224.759Z" fill="#4000FF" fill-opacity="0.2"/>
+  <path d="M597.383 395.602L612.643 600.964C614.194 621.848 631.591 638 652.533 638H1158C1180.09 638 1198 620.091 1198 598V40C1198 17.9086 1180.09 0 1158 0H1030.91C1024.61 0 1018.41 1.48688 1012.79 4.33963L622.364 202.727C609.192 209.42 600.782 222.829 600.492 237.601L597.383 395.602Z" fill="#4000FF" fill-opacity="0.2"/>
+  <path d="M570.306 638C593.566 638 611.92 618.231 610.196 595.036L596.96 416.892C595.997 403.929 588.795 392.243 577.65 385.556L397.531 277.485C380.573 267.31 358.724 271.055 346.123 286.297L109.488 572.512C87.9249 598.593 106.475 638 140.316 638H570.306Z" fill="#4000FF" fill-opacity="0.2"/>
+        <!-- Add all your SVG paths here -->
+      </clipPath>
+    </defs>
+  </svg>
+  
+  <div class="clip-this">Your content here</div>
+</Layout>
+
+<script>
+function adjustPath() {
+  const path = document.getElementById('dynamicPath');
+  let d = path?.getAttribute('d');
+  // Split the path into segments based on commands and spaces
+  let segments = (d ?? '').split(/(?=[LMC])/);
+
+  // Focus on adjusting only the first segment for simplicity
+  if (segments.length > 0) {
+    let firstSegment = segments[0];
+    let coords = firstSegment.slice(1).split(' '); // Remove command letter and split coordinates
+
+    if (coords.length > 1) {
+      // Parse the X and Y coordinates of the first command
+      let x = parseFloat(coords[0]);
+      let y = parseFloat(coords[1]);
+
+      // Randomly adjust X and Y coordinates
+      x += (Math.random() - 0.5) * 50; // Adjust this value as needed
+      y += (Math.random() - 0.5) * 50; // Adjust this value as needed
+
+      // Update the segment with the new coordinates
+      segments[0] = `M${x.toFixed(3)} ${y.toFixed(3)}`;
+    }
+  }
+
+  // Reconstruct the path data
+  let newPath = segments.join(' ');
+  if (path) {
+    path.setAttribute('d', newPath);
+  }
+}
+
+// Adjust the path every second
+setInterval(adjustPath, 1);
+
+</script>
+
+<style>
+.clip-this {
+  height: 638px;
+  width: 1198px;
+  background-color: red;
+  clip-path: url(#clipShape);
+  background: url(https://source.unsplash.com/tKF04645K7I);
+  background-size: cover;
+}
+</style>
