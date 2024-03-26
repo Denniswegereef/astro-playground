@@ -6,17 +6,26 @@ import Layout from "../layouts/Layout.astro";
   
 
   <div id="container"></div>
-
+  
+  <div class="test"></div>
 </Layout>
 
 <script>
   import  "@/components/voronoi-cells-v1/experience";  
 
-  
 
 </script>
 
 <style>
+  .test {
+    width: 500px;
+    height: 500px;
+    background-color: red;
+    position: fixed;
+    top: 5vh;
+    right: 5vh;
+    z-index: 9;
+  }
   .container {
     width: 100%;
     height: 100vh;

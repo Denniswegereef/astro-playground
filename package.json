@@ -30,6 +30,7 @@
     "react-dom": "^18.0.0",
     "sass": "^1.66.1",
     "stats.js": "^0.17.0",
+    "svg-round-corners": "^0.4.3",
     "swiper": "^10.2.0",
     "three": "^0.151.3",
     "virtual-scroll": "^2.2.1",

@@ -62,6 +62,9 @@ dependencies:
   stats.js:
     specifier: ^0.17.0
     version: 0.17.0
+  svg-round-corners:
+    specifier: ^0.4.3
+    version: 0.4.3
   swiper:
     specifier: ^10.2.0
     version: 10.2.0
@@ -4786,6 +4789,10 @@ packages:
       react: '>=17.0'
     dependencies:
       react: 18.2.0
+    dev: false
+
+  /svg-round-corners@0.4.3:
+    resolution: {integrity: sha512-9zxcdLa9Bh2Bddxa760wSzspWLJ1nTRMKIsVH6MjNm8QssbZGbmY0pOnjwrp/cST+mfod2l3lpbuKFe+c3wHjw==}
     dev: false
 
   /swiper@10.2.0:
