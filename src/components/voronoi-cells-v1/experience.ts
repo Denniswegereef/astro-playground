@@ -1,8 +1,8 @@
 import * as d3 from "d3"
 import gsap from "gsap"
-import { parsePath, roundCommands, roundCorners } from "svg-round-corners"
+// import { parsePath, roundCommands, roundCorners } from "svg-round-corners"
 
-import { smoothPath } from "svg-smoother"
+// import { smoothPath } from "svg-smoother"
 
 class Experience {
   container: HTMLElement | null
